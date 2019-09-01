@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xidian.reservation.dao.OrderMapper" >
+  <resultMap id="BaseResultMap" type="com.xidian.reservation.entity.Order" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="user_no" property="userNo" jdbcType="VARCHAR" />
+    <result column="room_name" property="roomName" jdbcType="VARCHAR" />
+    <result column="
+order_name" property="
+orderName" jdbcType="VARCHAR" />
+    <result column="order_tel" property="orderTel" jdbcType="INTEGER" />
+    <result column="order_date" property="orderDate" jdbcType="DATE" />
+    <result column="order_start_time" property="orderStartTime" jdbcType="TIME" />
+    <result column="order_end_time" property="orderEndTime" jdbcType="TIME" />
+    <result column="order_purpose" property="orderPurpose" jdbcType="VARCHAR" />
+    <result column="order_status" property="orderStatus" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, user_no, room_name, 
+order_name, order_tel, order_date, order_start_time, order_end_time, 
+    order_purpose, order_status
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from order
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from order
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xidian.reservation.entity.Order" >
+    insert into order (id, user_no, room_name, 
+      
+order_name, order_tel, order_date, 
+      order_start_time, order_end_time, order_purpose, 
+      order_status)
+    values (#{id,jdbcType=INTEGER}, #{userNo,jdbcType=VARCHAR}, #{roomName,jdbcType=VARCHAR}, 
+      #{
+orderName,jdbcType=VARCHAR}, #{orderTel,jdbcType=INTEGER}, #{orderDate,jdbcType=DATE}, 
+      #{orderStartTime,jdbcType=TIME}, #{orderEndTime,jdbcType=TIME}, #{orderPurpose,jdbcType=VARCHAR}, 
+      #{orderStatus,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xidian.reservation.entity.Order" >
+    insert into order
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userNo != null" >
+        user_no,
+      </if>
+      <if test="roomName != null" >
+        room_name,
+      </if>
+      <if test="
+orderName != null" >
+        
+order_name,
+      </if>
+      <if test="orderTel != null" >
+        order_tel,
+      </if>
+      <if test="orderDate != null" >
+        order_date,
+      </if>
+      <if test="orderStartTime != null" >
+        order_start_time,
+      </if>
+      <if test="orderEndTime != null" >
+        order_end_time,
+      </if>
+      <if test="orderPurpose != null" >
+        order_purpose,
+      </if>
+      <if test="orderStatus != null" >
+        order_status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userNo != null" >
+        #{userNo,jdbcType=VARCHAR},
+      </if>
+      <if test="roomName != null" >
+        #{roomName,jdbcType=VARCHAR},
+      </if>
+      <if test="
+orderName != null" >
+        #{
+orderName,jdbcType=VARCHAR},
+      </if>
+      <if test="orderTel != null" >
+        #{orderTel,jdbcType=INTEGER},
+      </if>
+      <if test="orderDate != null" >
+        #{orderDate,jdbcType=DATE},
+      </if>
+      <if test="orderStartTime != null" >
+        #{orderStartTime,jdbcType=TIME},
+      </if>
+      <if test="orderEndTime != null" >
+        #{orderEndTime,jdbcType=TIME},
+      </if>
+      <if test="orderPurpose != null" >
+        #{orderPurpose,jdbcType=VARCHAR},
+      </if>
+      <if test="orderStatus != null" >
+        #{orderStatus,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xidian.reservation.entity.Order" >
+    update order
+    <set >
+      <if test="userNo != null" >
+        user_no = #{userNo,jdbcType=VARCHAR},
+      </if>
+      <if test="roomName != null" >
+        room_name = #{roomName,jdbcType=VARCHAR},
+      </if>
+      <if test="
+orderName != null" >
+        
+order_name = #{
+orderName,jdbcType=VARCHAR},
+      </if>
+      <if test="orderTel != null" >
+        order_tel = #{orderTel,jdbcType=INTEGER},
+      </if>
+      <if test="orderDate != null" >
+        order_date = #{orderDate,jdbcType=DATE},
+      </if>
+      <if test="orderStartTime != null" >
+        order_start_time = #{orderStartTime,jdbcType=TIME},
+      </if>
+      <if test="orderEndTime != null" >
+        order_end_time = #{orderEndTime,jdbcType=TIME},
+      </if>
+      <if test="orderPurpose != null" >
+        order_purpose = #{orderPurpose,jdbcType=VARCHAR},
+      </if>
+      <if test="orderStatus != null" >
+        order_status = #{orderStatus,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xidian.reservation.entity.Order" >
+    update order
+    set user_no = #{userNo,jdbcType=VARCHAR},
+      room_name = #{roomName,jdbcType=VARCHAR},
+      
+order_name = #{
+orderName,jdbcType=VARCHAR},
+      order_tel = #{orderTel,jdbcType=INTEGER},
+      order_date = #{orderDate,jdbcType=DATE},
+      order_start_time = #{orderStartTime,jdbcType=TIME},
+      order_end_time = #{orderEndTime,jdbcType=TIME},
+      order_purpose = #{orderPurpose,jdbcType=VARCHAR},
+      order_status = #{orderStatus,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
