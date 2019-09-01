@@ -3,13 +3,13 @@ package com.xidian.reservation.dao;
 import com.xidian.reservation.entity.Consumer;
 
 public interface ConsumerMapper {
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(Integer consumerId);
 
     int insert(Consumer record);
 
     int insertSelective(Consumer record);
 
-    Consumer selectByPrimaryKey(Integer id);
+    Consumer selectByPrimaryKey(Integer consumerId);
 
     int updateByPrimaryKeySelective(Consumer record);
 
