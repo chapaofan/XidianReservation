@@ -25,5 +25,4 @@ public class Order {
     private String orderPurpose;
 
     private Integer orderStatus;
-
 }
