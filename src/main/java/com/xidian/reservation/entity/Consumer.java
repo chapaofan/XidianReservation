@@ -1,6 +1,6 @@
 package com.xidian.reservation.entity;
 
-public class User {
+public class Consumer {
     private Integer id;
 
     private String userName;

@@ -9,8 +9,7 @@ public class Order {
 
     private String roomName;
 
-    private String 
-orderName;
+    private String orderName;
 
     private Integer orderTel;
 
@@ -48,19 +47,12 @@ orderName;
         this.roomName = roomName == null ? null : roomName.trim();
     }
 
-    public String get
-orderName() {
-        return 
-orderName;
+    public String getOrderName() {
+        return orderName;
     }
 
-    public void set
-orderName(String 
-orderName) {
-        this.
-orderName = 
-orderName == null ? null : 
-orderName.trim();
+    public void setOrderName(String orderName) {
+        this.orderName = orderName == null ? null : orderName.trim();
     }
 
     public Integer getOrderTel() {

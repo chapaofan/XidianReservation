@@ -5,9 +5,7 @@
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="user_no" property="userNo" jdbcType="VARCHAR" />
     <result column="room_name" property="roomName" jdbcType="VARCHAR" />
-    <result column="
-order_name" property="
-orderName" jdbcType="VARCHAR" />
+    <result column="order_name" property="orderName" jdbcType="VARCHAR" />
     <result column="order_tel" property="orderTel" jdbcType="INTEGER" />
     <result column="order_date" property="orderDate" jdbcType="DATE" />
     <result column="order_start_time" property="orderStartTime" jdbcType="TIME" />
@@ -16,8 +14,7 @@ orderName" jdbcType="VARCHAR" />
     <result column="order_status" property="orderStatus" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, user_no, room_name, 
-order_name, order_tel, order_date, order_start_time, order_end_time, 
+    id, user_no, room_name, order_name, order_tel, order_date, order_start_time, order_end_time, 
     order_purpose, order_status
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -32,13 +29,11 @@ order_name, order_tel, order_date, order_start_time, order_end_time,
   </delete>
   <insert id="insert" parameterType="com.xidian.reservation.entity.Order" >
     insert into order (id, user_no, room_name, 
-      
-order_name, order_tel, order_date, 
+      order_name, order_tel, order_date, 
       order_start_time, order_end_time, order_purpose, 
       order_status)
     values (#{id,jdbcType=INTEGER}, #{userNo,jdbcType=VARCHAR}, #{roomName,jdbcType=VARCHAR}, 
-      #{
-orderName,jdbcType=VARCHAR}, #{orderTel,jdbcType=INTEGER}, #{orderDate,jdbcType=DATE}, 
+      #{orderName,jdbcType=VARCHAR}, #{orderTel,jdbcType=INTEGER}, #{orderDate,jdbcType=DATE}, 
       #{orderStartTime,jdbcType=TIME}, #{orderEndTime,jdbcType=TIME}, #{orderPurpose,jdbcType=VARCHAR}, 
       #{orderStatus,jdbcType=INTEGER})
   </insert>
@@ -54,10 +49,8 @@ orderName,jdbcType=VARCHAR}, #{orderTel,jdbcType=INTEGER}, #{orderDate,jdbcType=
       <if test="roomName != null" >
         room_name,
       </if>
-      <if test="
-orderName != null" >
-        
-order_name,
+      <if test="orderName != null" >
+        order_name,
       </if>
       <if test="orderTel != null" >
         order_tel,
@@ -88,10 +81,8 @@ order_name,
       <if test="roomName != null" >
         #{roomName,jdbcType=VARCHAR},
       </if>
-      <if test="
-orderName != null" >
-        #{
-orderName,jdbcType=VARCHAR},
+      <if test="orderName != null" >
+        #{orderName,jdbcType=VARCHAR},
       </if>
       <if test="orderTel != null" >
         #{orderTel,jdbcType=INTEGER},
@@ -122,11 +113,8 @@ orderName,jdbcType=VARCHAR},
       <if test="roomName != null" >
         room_name = #{roomName,jdbcType=VARCHAR},
       </if>
-      <if test="
-orderName != null" >
-        
-order_name = #{
-orderName,jdbcType=VARCHAR},
+      <if test="orderName != null" >
+        order_name = #{orderName,jdbcType=VARCHAR},
       </if>
       <if test="orderTel != null" >
         order_tel = #{orderTel,jdbcType=INTEGER},
@@ -153,9 +141,7 @@ orderName,jdbcType=VARCHAR},
     update order
     set user_no = #{userNo,jdbcType=VARCHAR},
       room_name = #{roomName,jdbcType=VARCHAR},
-      
-order_name = #{
-orderName,jdbcType=VARCHAR},
+      order_name = #{orderName,jdbcType=VARCHAR},
       order_tel = #{orderTel,jdbcType=INTEGER},
       order_date = #{orderDate,jdbcType=DATE},
       order_start_time = #{orderStartTime,jdbcType=TIME},
