@@ -1,228 +1,59 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.xidian.reservation.dao.ManagerMapper">
-  <resultMap id="BaseResultMap" type="com.xidian.reservation.entity.Manager">
-    <id column="manager_id" jdbcType="INTEGER" property="managerId" />
-    <result column="manager_name" jdbcType="VARCHAR" property="managerName" />
-    <result column="manager_password" jdbcType="VARCHAR" property="managerPassword" />
-    <result column="manager_position" jdbcType="INTEGER" property="managerPosition" />
-    <result column="manager_department" jdbcType="VARCHAR" property="managerDepartment" />
-    <result column="manager_school" jdbcType="VARCHAR" property="managerSchool" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    manager_id, manager_name, manager_password, manager_position, manager_department, 
-    manager_school
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from manager
-    where manager_id = #{managerId,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from manager
-    where manager_id = #{managerId,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.xidian.reservation.entity.Manager">
-    insert into manager (manager_id, manager_name, manager_password, 
-      manager_position, manager_department, manager_school
-      )
-    values (#{managerId,jdbcType=INTEGER}, #{managerName,jdbcType=VARCHAR}, #{managerPassword,jdbcType=VARCHAR}, 
-      #{managerPosition,jdbcType=INTEGER}, #{managerDepartment,jdbcType=VARCHAR}, #{managerSchool,jdbcType=VARCHAR}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.xidian.reservation.entity.Manager">
-    insert into manager
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="managerId != null">
-        manager_id,
-      </if>
-      <if test="managerName != null">
-        manager_name,
-      </if>
-      <if test="managerPassword != null">
-        manager_password,
-      </if>
-      <if test="managerPosition != null">
-        manager_position,
-      </if>
-      <if test="managerDepartment != null">
-        manager_department,
-      </if>
-      <if test="managerSchool != null">
-        manager_school,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="managerId != null">
-        #{managerId,jdbcType=INTEGER},
-      </if>
-      <if test="managerName != null">
-        #{managerName,jdbcType=VARCHAR},
-      </if>
-      <if test="managerPassword != null">
-        #{managerPassword,jdbcType=VARCHAR},
-      </if>
-      <if test="managerPosition != null">
-        #{managerPosition,jdbcType=INTEGER},
-      </if>
-      <if test="managerDepartment != null">
-        #{managerDepartment,jdbcType=VARCHAR},
-      </if>
-      <if test="managerSchool != null">
-        #{managerSchool,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.xidian.reservation.entity.Manager">
-    update manager
-    <set>
-      <if test="managerName != null">
-        manager_name = #{managerName,jdbcType=VARCHAR},
-      </if>
-      <if test="managerPassword != null">
-        manager_password = #{managerPassword,jdbcType=VARCHAR},
-      </if>
-      <if test="managerPosition != null">
-        manager_position = #{managerPosition,jdbcType=INTEGER},
-      </if>
-      <if test="managerDepartment != null">
-        manager_department = #{managerDepartment,jdbcType=VARCHAR},
-      </if>
-      <if test="managerSchool != null">
-        manager_school = #{managerSchool,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where manager_id = #{managerId,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.xidian.reservation.entity.Manager">
-    update manager
-    set manager_name = #{managerName,jdbcType=VARCHAR},
-      manager_password = #{managerPassword,jdbcType=VARCHAR},
-      manager_position = #{managerPosition,jdbcType=INTEGER},
-      manager_department = #{managerDepartment,jdbcType=VARCHAR},
-      manager_school = #{managerSchool,jdbcType=VARCHAR}
-    where manager_id = #{managerId,jdbcType=INTEGER}
-  </update>
-  <resultMap id="BaseResultMap" type="com.xidian.reservation.entity.Manager">
-    <id column="manager_id" jdbcType="INTEGER" property="managerId" />
-    <result column="manager_name" jdbcType="VARCHAR" property="managerName" />
-    <result column="manager_password" jdbcType="VARCHAR" property="managerPassword" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    manager_id, manager_name, manager_password
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from manager
-    where manager_id = #{managerId,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from manager
-    where manager_id = #{managerId,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.xidian.reservation.entity.Manager">
-    insert into manager (manager_id, manager_name, manager_password
-      )
-    values (#{managerId,jdbcType=INTEGER}, #{managerName,jdbcType=VARCHAR}, #{managerPassword,jdbcType=VARCHAR}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.xidian.reservation.entity.Manager">
-    insert into manager
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="managerId != null">
-        manager_id,
-      </if>
-      <if test="managerName != null">
-        manager_name,
-      </if>
-      <if test="managerPassword != null">
-        manager_password,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="managerId != null">
-        #{managerId,jdbcType=INTEGER},
-      </if>
-      <if test="managerName != null">
-        #{managerName,jdbcType=VARCHAR},
-      </if>
-      <if test="managerPassword != null">
-        #{managerPassword,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.xidian.reservation.entity.Manager">
-    update manager
-    <set>
-      <if test="managerName != null">
-        manager_name = #{managerName,jdbcType=VARCHAR},
-      </if>
-      <if test="managerPassword != null">
-        manager_password = #{managerPassword,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where manager_id = #{managerId,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.xidian.reservation.entity.Manager">
-    update manager
-    set manager_name = #{managerName,jdbcType=VARCHAR},
-      manager_password = #{managerPassword,jdbcType=VARCHAR}
-    where manager_id = #{managerId,jdbcType=INTEGER}
-  </update>
-  <resultMap id="BaseResultMap" type="com.xidian.reservation.entity.Manager">
-    <id column="manager_id" jdbcType="INTEGER" property="managerId" />
-    <result column="manager_password" jdbcType="VARCHAR" property="managerPassword" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    manager_id, manager_password
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from manager
-    where manager_id = #{managerId,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from manager
-    where manager_id = #{managerId,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.xidian.reservation.entity.Manager">
-    insert into manager (manager_id, manager_password)
-    values (#{managerId,jdbcType=INTEGER}, #{managerPassword,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertSelective" parameterType="com.xidian.reservation.entity.Manager">
-    insert into manager
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="managerId != null">
-        manager_id,
-      </if>
-      <if test="managerPassword != null">
-        manager_password,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="managerId != null">
-        #{managerId,jdbcType=INTEGER},
-      </if>
-      <if test="managerPassword != null">
-        #{managerPassword,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.xidian.reservation.entity.Manager">
-    update manager
-    <set>
-      <if test="managerPassword != null">
-        manager_password = #{managerPassword,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where manager_id = #{managerId,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.xidian.reservation.entity.Manager">
-    update manager
-    set manager_password = #{managerPassword,jdbcType=VARCHAR}
-    where manager_id = #{managerId,jdbcType=INTEGER}
-  </update>
+    <resultMap id="BaseResultMap" type="com.xidian.reservation.entity.Manager">
+        <id column="manager_id" property="managerId" jdbcType="INTEGER"/>
+        <result column="manager_password" property="managerPassword" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        manager_id, manager_password
+    </sql>
+    <select id="selectByManagerId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from manager
+        where manager_id = #{managerId,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from manager
+        where manager_id = #{managerId,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.xidian.reservation.entity.Manager">
+        insert into manager (manager_id, manager_password)
+        values (#{managerId,jdbcType=INTEGER}, #{managerPassword,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.xidian.reservation.entity.Manager">
+        insert into manager
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="managerId != null">
+                manager_id,
+            </if>
+            <if test="managerPassword != null">
+                manager_password,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="managerId != null">
+                #{managerId,jdbcType=INTEGER},
+            </if>
+            <if test="managerPassword != null">
+                #{managerPassword,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.xidian.reservation.entity.Manager">
+        update manager
+        <set>
+            <if test="managerPassword != null">
+                manager_password = #{managerPassword,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where manager_id = #{managerId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.xidian.reservation.entity.Manager">
+        update manager
+        set manager_password = #{managerPassword,jdbcType=VARCHAR}
+        where manager_id = #{managerId,jdbcType=INTEGER}
+    </update>
 </mapper>

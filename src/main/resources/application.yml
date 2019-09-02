@@ -8,16 +8,33 @@ server:
     protocol-header: x-forwarded-proto
   use-forward-headers: true
 
+mybatis:
+  type-aliases-package: com/xidian/reservation/entity
+  mapper-locations: classpath:mapping/*.xml
 
 spring:
   profiles:
     active: dev
 
+#  课室编号
+#  {{keyword1.DATA}}
+#
+#  预约人
+#  {{keyword2.DATA}}
+#
+#  预约结果
+#  {{keyword3.DATA}}
+#
+#  预约时间
+#  {{keyword4.DATA}}
+#
+#  备注
+#  {{keyword5.DATA}}
 
 wx:
-  appid:
-  secret:
-  templateId:
+  appid: wx2709ce70a691dad4
+  secret: 29254833786b7631bdd412e17c441b98
+  templateId: a9GQRxNcA10G_t7Yi_4HxLebTuewDJFuE56TIj-dAKg
   url: https://api.weixin.qq.com/sns/jscode2session?appid=${wx.appid}&secret=${wx.secret}&grant_type=authorization_code&js_code=
 
 ---
@@ -82,7 +99,7 @@ spring:
   profiles: relase
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/volunteer_test?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT
+    url: jdbc:mysql://localhost:3306/reservation?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT
     username: root
     password: Zmlnb&Zylnb666
   servlet:
