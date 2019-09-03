@@ -3,10 +3,10 @@
 <mapper namespace="com.xidian.reservation.dao.OrderMapper" >
   <resultMap id="BaseResultMap" type="com.xidian.reservation.entity.Order" >
     <id column="order_id" property="orderId" jdbcType="INTEGER" />
-    <result column="consumer_id" property="consumerId" jdbcType="INTEGER" />
+    <result column="consumer_id" property="consumerId" jdbcType="BIGINT" />
     <result column="order_name" property="orderName" jdbcType="VARCHAR" />
     <result column="room_name" property="roomName" jdbcType="VARCHAR" />
-    <result column="order_tel" property="orderTel" jdbcType="INTEGER" />
+    <result column="order_tel" property="orderTel" jdbcType="BIGINT" />
     <result column="order_date" property="orderDate" jdbcType="DATE" />
     <result column="order_start_time" property="orderStartTime" jdbcType="TIME" />
     <result column="order_end_time" property="orderEndTime" jdbcType="TIME" />
@@ -32,8 +32,8 @@
       room_name, order_tel, order_date, 
       order_start_time, order_end_time, order_purpose, 
       order_status)
-    values (#{orderId,jdbcType=INTEGER}, #{consumerId,jdbcType=INTEGER}, #{orderName,jdbcType=VARCHAR}, 
-      #{roomName,jdbcType=VARCHAR}, #{orderTel,jdbcType=INTEGER}, #{orderDate,jdbcType=DATE}, 
+    values (#{orderId,jdbcType=INTEGER}, #{consumerId,jdbcType=BIGINT}, #{orderName,jdbcType=VARCHAR},
+      #{roomName,jdbcType=VARCHAR}, #{orderTel,jdbcType=BIGINT}, #{orderDate,jdbcType=DATE},
       #{orderStartTime,jdbcType=TIME}, #{orderEndTime,jdbcType=TIME}, #{orderPurpose,jdbcType=VARCHAR}, 
       #{orderStatus,jdbcType=INTEGER})
   </insert>
@@ -76,7 +76,7 @@
         #{orderId,jdbcType=INTEGER},
       </if>
       <if test="consumerId != null" >
-        #{consumerId,jdbcType=INTEGER},
+        #{consumerId,jdbcType=BIGINT},
       </if>
       <if test="orderName != null" >
         #{orderName,jdbcType=VARCHAR},
@@ -85,7 +85,7 @@
         #{roomName,jdbcType=VARCHAR},
       </if>
       <if test="orderTel != null" >
-        #{orderTel,jdbcType=INTEGER},
+        #{orderTel,jdbcType=BIGINT},
       </if>
       <if test="orderDate != null" >
         #{orderDate,jdbcType=DATE},
@@ -108,7 +108,7 @@
     update order
     <set >
       <if test="consumerId != null" >
-        consumer_id = #{consumerId,jdbcType=INTEGER},
+        consumer_id = #{consumerId,jdbcType=BIGINT},
       </if>
       <if test="orderName != null" >
         order_name = #{orderName,jdbcType=VARCHAR},
@@ -117,7 +117,7 @@
         room_name = #{roomName,jdbcType=VARCHAR},
       </if>
       <if test="orderTel != null" >
-        order_tel = #{orderTel,jdbcType=INTEGER},
+        order_tel = #{orderTel,jdbcType=BIGINT},
       </if>
       <if test="orderDate != null" >
         order_date = #{orderDate,jdbcType=DATE},
@@ -139,10 +139,10 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.xidian.reservation.entity.Order" >
     update order
-    set consumer_id = #{consumerId,jdbcType=INTEGER},
+    set consumer_id = #{consumerId,jdbcType=BIGINT},
       order_name = #{orderName,jdbcType=VARCHAR},
       room_name = #{roomName,jdbcType=VARCHAR},
-      order_tel = #{orderTel,jdbcType=INTEGER},
+      order_tel = #{orderTel,jdbcType=BIGINT},
       order_date = #{orderDate,jdbcType=DATE},
       order_start_time = #{orderStartTime,jdbcType=TIME},
       order_end_time = #{orderEndTime,jdbcType=TIME},

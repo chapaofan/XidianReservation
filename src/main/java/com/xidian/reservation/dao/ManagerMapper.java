@@ -4,13 +4,13 @@ import com.xidian.reservation.entity.Manager;
 
 public interface ManagerMapper {
 
-    int deleteByPrimaryKey(Integer managerId);
+    int deleteByPrimaryKey(Long managerId);
 
     int insert(Manager record);
 
     int insertSelective(Manager record);
 
-    Manager selectByManagerId(Integer managerId);
+    Manager selectByManagerId(Long managerId);
 
     int updateByPrimaryKeySelective(Manager record);
 

@@ -3,13 +3,11 @@ package com.xidian.reservation.service.impl;
 import com.xidian.reservation.dao.ManagerMapper;
 import com.xidian.reservation.dto.TokenInfo;
 import com.xidian.reservation.entity.Manager;
-import com.xidian.reservation.exceptionHandler.Response.CacheResponseBody;
 import com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody;
 import com.xidian.reservation.service.ManagerService;
 import com.xidian.reservation.utils.MD5Util;
 import com.xidian.reservation.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -48,11 +46,11 @@ public class ManagerServiceImpl implements ManagerService {
         return managerMapper.insert(manager) > 0;
     }
 
-    public boolean deleteManager(Integer managerId) {
+    public boolean deleteManager(Long managerId) {
         return managerMapper.deleteByPrimaryKey(managerId) > 0;
     }
 
-    public Manager findManagerById(Integer managerId){
+    public Manager findManagerById(Long managerId){
         return managerMapper.selectByManagerId(managerId);
     }
 }

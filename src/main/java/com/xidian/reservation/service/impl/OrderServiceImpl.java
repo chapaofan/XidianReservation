@@ -32,11 +32,11 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.updateByPrimaryKey(order) > 0;
     }
 
-    public List<Order> findHistoryOrders(Integer consumerId, int pageNum){
+    public List<Order> findHistoryOrders(Long consumerId, int pageNum){
         return null;//TODO return selectHistoryOrders;
     }
 
-    public List<Order> findNotStartOrders(Integer consumerId,int pageNum){
+    public List<Order> findNotStartOrders(Long consumerId,int pageNum){
         return null;//TODO return orderMapper.selectNotStartOrders;
     }
 }

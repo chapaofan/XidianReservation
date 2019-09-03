@@ -10,11 +10,11 @@ public interface ConsumerService {
 
     UniversalResponseBody consumerLogin(Consumer consumer) throws Exception;
 
-    boolean saveConsumer(Consumer consumer);
+    UniversalResponseBody saveConsumer(Consumer consumer);
 
-    boolean deleteConsumer(Integer consumerId);
+    UniversalResponseBody deleteConsumer(Long consumerId);
 
-    Consumer findConsumerById(Integer consumerId);
+    Consumer findConsumerById(Long consumerId);
 
     List<Consumer> findConsumers(int pageNum);
 }

@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class Consumer {
-    private Integer consumerId;
+    private Long consumerId;
 
     private String consumerName;
 

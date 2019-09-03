@@ -61,9 +61,9 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                     throw new BizException("600","Token does not exist! Please login again!");
                 }
                 // 获取 token 中的 user id（用户名）
-                int userId;
+                Long userId;
                 try {
-                    userId = Integer.parseInt(TokenUtil.getAppUID(token));
+                    userId =  Long.parseLong(TokenUtil.getAppUID(token));
                     //System.out.println(userName);
                     //userName = JWT.decode(token).getAudience().get(0);
                 } catch (JWTDecodeException j) {

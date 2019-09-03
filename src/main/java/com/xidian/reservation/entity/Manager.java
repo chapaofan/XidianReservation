@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class Manager {
-    private Integer managerId;
+    private Long managerId;
 
     private String managerPassword;
 

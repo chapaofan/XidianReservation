@@ -2,26 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.xidian.reservation.dao.ManagerMapper">
     <resultMap id="BaseResultMap" type="com.xidian.reservation.entity.Manager">
-        <id column="manager_id" property="managerId" jdbcType="INTEGER"/>
+        <id column="manager_id" property="managerId" jdbcType="BIGINT" />
         <result column="manager_password" property="managerPassword" jdbcType="VARCHAR"/>
     </resultMap>
     <sql id="Base_Column_List">
         manager_id, manager_password
     </sql>
-    <select id="selectByManagerId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    <select id="selectByManagerId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
         select
         <include refid="Base_Column_List"/>
         from manager
-        where manager_id = #{managerId,jdbcType=INTEGER}
+        where manager_id = #{managerId,jdbcType=BIGINT}
     </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete
         from manager
-        where manager_id = #{managerId,jdbcType=INTEGER}
+        where manager_id = #{managerId,jdbcType=BIGINT}
     </delete>
     <insert id="insert" parameterType="com.xidian.reservation.entity.Manager">
         insert into manager (manager_id, manager_password)
-        values (#{managerId,jdbcType=INTEGER}, #{managerPassword,jdbcType=VARCHAR})
+        values (#{managerId,jdbcType=BIGINT}, #{managerPassword,jdbcType=VARCHAR})
     </insert>
     <insert id="insertSelective" parameterType="com.xidian.reservation.entity.Manager">
         insert into manager
@@ -35,7 +35,7 @@
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="managerId != null">
-                #{managerId,jdbcType=INTEGER},
+                #{managerId,jdbcType=BIGINT},
             </if>
             <if test="managerPassword != null">
                 #{managerPassword,jdbcType=VARCHAR},
@@ -49,11 +49,11 @@
                 manager_password = #{managerPassword,jdbcType=VARCHAR},
             </if>
         </set>
-        where manager_id = #{managerId,jdbcType=INTEGER}
+        where manager_id = #{managerId,jdbcType=BIGINT}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.xidian.reservation.entity.Manager">
         update manager
         set manager_password = #{managerPassword,jdbcType=VARCHAR}
-        where manager_id = #{managerId,jdbcType=INTEGER}
+        where manager_id = #{managerId,jdbcType=BIGINT}
     </update>
 </mapper>

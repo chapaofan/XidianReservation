@@ -12,8 +12,8 @@ public interface OrderService {
 
     boolean updateOrder(Order order);
 
-    List<Order> findHistoryOrders(Integer consumerId,int pageNum);
+    List<Order> findHistoryOrders(Long consumerId,int pageNum);
 
-    List<Order> findNotStartOrders(Integer consumerId,int pageNum);
+    List<Order> findNotStartOrders(Long consumerId,int pageNum);
 
 }

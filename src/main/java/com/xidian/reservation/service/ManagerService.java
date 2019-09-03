@@ -9,7 +9,7 @@ public interface ManagerService {
 
     boolean saveManager(Manager manager);
 
-    boolean deleteManager(Integer managerId);
+    boolean deleteManager(Long managerId);
 
-    Manager findManagerById(Integer managerId);
+    Manager findManagerById(Long managerId);
 }

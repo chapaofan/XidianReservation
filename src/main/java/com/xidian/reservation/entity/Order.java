@@ -8,13 +8,13 @@ import java.util.Date;
 public class Order {
     private Integer orderId;
 
-    private Integer consumerId;
+    private Long consumerId;
 
     private String orderName;
 
     private String roomName;
 
-    private Integer orderTel;
+    private Long orderTel;
 
     private Date orderDate;
 

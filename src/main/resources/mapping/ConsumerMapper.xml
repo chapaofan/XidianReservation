@@ -2,27 +2,27 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.xidian.reservation.dao.ConsumerMapper" >
   <resultMap id="BaseResultMap" type="com.xidian.reservation.entity.Consumer" >
-    <id column="consumer_id" property="consumerId" jdbcType="INTEGER" />
+    <id column="consumer_id" property="consumerId" jdbcType="BIGINT" />
     <result column="consumer_name" property="consumerName" jdbcType="VARCHAR" />
     <result column="consumer_password" property="consumerPassword" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     consumer_id, consumer_name, consumer_password
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
     <include refid="Base_Column_List" />
     from consumer
-    where consumer_id = #{consumerId,jdbcType=INTEGER}
+    where consumer_id = #{consumerId,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from consumer
-    where consumer_id = #{consumerId,jdbcType=INTEGER}
+    where consumer_id = #{consumerId,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.xidian.reservation.entity.Consumer" >
     insert into consumer (consumer_id, consumer_name, consumer_password
       )
-    values (#{consumerId,jdbcType=INTEGER}, #{consumerName,jdbcType=VARCHAR}, #{consumerPassword,jdbcType=VARCHAR}
+    values (#{consumerId,jdbcType=BIGINT}, #{consumerName,jdbcType=VARCHAR}, #{consumerPassword,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.xidian.reservation.entity.Consumer" >
@@ -40,7 +40,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="consumerId != null" >
-        #{consumerId,jdbcType=INTEGER},
+        #{consumerId,jdbcType=BIGINT},
       </if>
       <if test="consumerName != null" >
         #{consumerName,jdbcType=VARCHAR},
@@ -60,12 +60,12 @@
         consumer_password = #{consumerPassword,jdbcType=VARCHAR},
       </if>
     </set>
-    where consumer_id = #{consumerId,jdbcType=INTEGER}
+    where consumer_id = #{consumerId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.xidian.reservation.entity.Consumer" >
     update consumer
     set consumer_name = #{consumerName,jdbcType=VARCHAR},
       consumer_password = #{consumerPassword,jdbcType=VARCHAR}
-    where consumer_id = #{consumerId,jdbcType=INTEGER}
+    where consumer_id = #{consumerId,jdbcType=BIGINT}
   </update>
 </mapper>

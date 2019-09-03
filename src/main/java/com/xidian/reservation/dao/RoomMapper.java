@@ -11,6 +11,8 @@ public interface RoomMapper {
 
     Room selectByPrimaryKey(Integer roomId);
 
+    Room selectByName(String roomName);
+
     int updateByPrimaryKeySelective(Room record);
 
     int updateByPrimaryKey(Room record);

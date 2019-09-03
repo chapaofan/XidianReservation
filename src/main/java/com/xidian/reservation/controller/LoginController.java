@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
@@ -33,9 +32,6 @@ public class LoginController {
     @Resource
     private ConsumerService consumerService;
 
-    @Autowired
-    private RedisTemplate redisTemplate;
-
     @RequestMapping(value = "/manager", method = RequestMethod.POST)
     public UniversalResponseBody ManagerLogin(@NotNull Manager loginData) throws Exception {
         return managerService.managerLogin(loginData);
@@ -51,7 +47,7 @@ public class LoginController {
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public UniversalResponseBody test(HttpServletRequest httpServletRequest, @RequestParam("test") int test) {
         String token = httpServletRequest.getHeader("token");
-        int userId = Integer.parseInt(TokenUtil.getAppUID(token));
+        Long userId =  Long.parseLong(TokenUtil.getAppUID(token));
         log.info("" + test);
         return UniversalResponseBody.success(managerService.findManagerById(userId));
     }

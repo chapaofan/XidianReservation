@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import javax.servlet.http.HttpServletRequest;
+import java.sql.SQLException;
 
 /**
  * @author ：Maolin
@@ -58,4 +58,19 @@ public class GlobalExceptionHandler {
         log.error("未知异常！原因是:",e);
         return UniversalResponseBody.error(CommonEnum.INTERNAL_SERVER_ERROR);
     }
+
+    /**
+     * 处理SQL语句异常
+     * @param req
+     * @param e
+     * @return
+     */
+    @ResponseBody
+    @ExceptionHandler(value =SQLException.class)
+    public UniversalResponseBody exceptionHandler(HttpServletRequest req, SQLException e){
+        log.error("mysql语句异常，原因：",e);
+        return UniversalResponseBody.error(CommonEnum.SQL_STATEMENT_ERROR);
+    }
+    //DuplicateKeyException
+      //      SQLIntegrityConstraintViolationException
 }
