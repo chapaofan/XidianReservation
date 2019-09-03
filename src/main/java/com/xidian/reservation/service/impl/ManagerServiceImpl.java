@@ -37,7 +37,7 @@ public class ManagerServiceImpl implements ManagerService {
             return UniversalResponseBody.error("-1", "Wrong password！");
         } else {
 
-            String token = TokenUtil.getToken(manager.getManagerId());
+            String token = TokenUtil.getToken(""+manager.getManagerId());
             //密码进行加密输出
             manager.setManagerPassword(MD5Util.encrypt(manager.getManagerPassword()));
             return UniversalResponseBody.success(new TokenInfo<>(manager,token));

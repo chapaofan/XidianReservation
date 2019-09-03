@@ -7,6 +7,7 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.xidian.reservation.annotation.PassToken;
 import com.xidian.reservation.annotation.UserLoginToken;
+import com.xidian.reservation.exceptionHandler.BizException;
 import com.xidian.reservation.service.ConsumerService;
 import com.xidian.reservation.service.ManagerService;
 import com.xidian.reservation.utils.TokenUtil;
@@ -57,27 +58,27 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             if (userLoginToken.required()) {
                 // 执行认证
                 if (token == null) {
-                    throw new RuntimeException("【Token】Token does not exist! Please login again!");
+                    throw new BizException("600","Token does not exist! Please login again!");
                 }
                 // 获取 token 中的 user id（用户名）
                 int userId;
                 try {
-                    userId = TokenUtil.getAppUID(token);
+                    userId = Integer.parseInt(TokenUtil.getAppUID(token));
                     //System.out.println(userName);
                     //userName = JWT.decode(token).getAudience().get(0);
                 } catch (JWTDecodeException j) {
-                    throw new RuntimeException("【Token】401");
+                    throw new BizException("600","status：401 未授权");
                 }
 
                 if (managerService.findManagerById(userId) == null && consumerService.findConsumerById(userId) == null) {
-                    throw new RuntimeException("【Token】User does not exist!");
+                    throw new BizException("600","User does not exist!");
                 }
                 // 验证 token
                 JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(SECRET)).build();
                 try {
                     jwtVerifier.verify(token);
                 } catch (JWTVerificationException e) {
-                    throw new RuntimeException("【Token】401");
+                    throw new BizException("600","status：401 未授权");
                 }
                 return true;
             }

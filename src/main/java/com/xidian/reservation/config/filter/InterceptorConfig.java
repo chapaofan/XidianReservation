@@ -1,4 +1,4 @@
-package com.xidian.reservation.config;
+package com.xidian.reservation.config.filter;
 
 import com.xidian.reservation.config.filter.AuthenticationInterceptor;
 import org.springframework.context.annotation.Bean;

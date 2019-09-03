@@ -1,13 +1,13 @@
 package com.xidian.reservation.utils;
 
 import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.interfaces.JWTVerifier;
+import com.xidian.reservation.exceptionHandler.BizException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -24,7 +24,7 @@ import java.util.Map;
 public class TokenUtil {
 
     /**
-     * 登录Token的生成和解析
+     * APP登录Token的生成和解析
      */
 
     /**
@@ -47,7 +47,7 @@ public class TokenUtil {
      * @param user_id 登录成功后用户user_id, 参数user_id不可传空
      */
 
-    public static String getToken(Integer user_id) throws Exception {
+    public static String getToken(String user_id) throws Exception {
         Date iatDate = new Date();
         // expire time
         Calendar nowTime = Calendar.getInstance();
@@ -88,7 +88,8 @@ public class TokenUtil {
             JWTVerifier verifier = JWT.require(Algorithm.HMAC256(SECRET)).build();
             jwt = verifier.verify(token);
         } catch (Exception e) {
-            throw new RuntimeException("【Token】Token is illegal or expired");
+            throw new BizException("600","Token is illegal or expired");
+            //throw new RuntimeException("Token is illegal or expired");
         }
         return jwt.getClaims();
     }
@@ -99,13 +100,13 @@ public class TokenUtil {
      * @param token
      * @return user_id
      */
-    public static Integer getAppUID(String token) {
+    public static String getAppUID(String token) {
         Map<String, Claim> claims = verifyToken(token);
         Claim user_id_claim = claims.get("user_id");
         if (null == user_id_claim || StringUtils.isEmpty(user_id_claim.asString())) {
-            log.error(user_id_claim.asString());
-            throw new RuntimeException("【Token】Token is illegal or expired");
+            throw new BizException("600","Token is illegal or expired");
+            //throw new RuntimeException("Token is illegal or expired");
         }
-        return Integer.parseInt(user_id_claim.asString());
+        return user_id_claim.asString();
     }
 }

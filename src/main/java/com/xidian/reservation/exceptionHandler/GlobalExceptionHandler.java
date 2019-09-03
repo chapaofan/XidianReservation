@@ -4,8 +4,9 @@ import com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author ：Maolin
@@ -17,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    //private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     /**
      * 处理自定义的业务异常
@@ -25,6 +25,7 @@ public class GlobalExceptionHandler {
      * @param e
      * @return
      */
+    @ResponseBody
     @ExceptionHandler(value = BizException.class)
     public UniversalResponseBody bizExceptionHandler(HttpServletRequest req, BizException e){
         log.error("发生业务异常！原因是：{}",e.getErrorMsg());
@@ -37,6 +38,7 @@ public class GlobalExceptionHandler {
      * @param e
      * @return
      */
+    @ResponseBody
     @ExceptionHandler(value =NullPointerException.class)
     public UniversalResponseBody exceptionHandler(HttpServletRequest req, NullPointerException e){
         log.error("发生空指针异常！原因是:",e);
@@ -50,6 +52,7 @@ public class GlobalExceptionHandler {
      * @param e
      * @return
      */
+    @ResponseBody
     @ExceptionHandler(value =Exception.class)
     public UniversalResponseBody exceptionHandler(HttpServletRequest req, Exception e){
         log.error("未知异常！原因是:",e);
