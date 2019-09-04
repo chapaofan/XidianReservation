@@ -8,14 +8,14 @@
     <result column="room_name" property="roomName" jdbcType="VARCHAR" />
     <result column="order_tel" property="orderTel" jdbcType="BIGINT" />
     <result column="order_date" property="orderDate" jdbcType="DATE" />
-    <result column="order_start_time" property="orderStartTime" jdbcType="TIME" />
-    <result column="order_end_time" property="orderEndTime" jdbcType="TIME" />
+    <result column="order_start" property="orderStart" jdbcType="TIME" />
+    <result column="order_end" property="orderEnd" jdbcType="TIME" />
     <result column="order_purpose" property="orderPurpose" jdbcType="VARCHAR" />
     <result column="order_status" property="orderStatus" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    order_id, consumer_id, order_name, room_name, order_tel, order_date, order_start_time, 
-    order_end_time, order_purpose, order_status
+    order_id, consumer_id, order_name, room_name, order_tel, order_date, order_start, 
+    order_end, order_purpose, order_status
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -30,11 +30,11 @@
   <insert id="insert" parameterType="com.xidian.reservation.entity.Order" >
     insert into order (order_id, consumer_id, order_name, 
       room_name, order_tel, order_date, 
-      order_start_time, order_end_time, order_purpose, 
+      order_start, order_end, order_purpose, 
       order_status)
-    values (#{orderId,jdbcType=INTEGER}, #{consumerId,jdbcType=BIGINT}, #{orderName,jdbcType=VARCHAR},
-      #{roomName,jdbcType=VARCHAR}, #{orderTel,jdbcType=BIGINT}, #{orderDate,jdbcType=DATE},
-      #{orderStartTime,jdbcType=TIME}, #{orderEndTime,jdbcType=TIME}, #{orderPurpose,jdbcType=VARCHAR}, 
+    values (#{orderId,jdbcType=INTEGER}, #{consumerId,jdbcType=BIGINT}, #{orderName,jdbcType=VARCHAR}, 
+      #{roomName,jdbcType=VARCHAR}, #{orderTel,jdbcType=BIGINT}, #{orderDate,jdbcType=DATE}, 
+      #{orderStart,jdbcType=TIME}, #{orderEnd,jdbcType=TIME}, #{orderPurpose,jdbcType=VARCHAR}, 
       #{orderStatus,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.xidian.reservation.entity.Order" >
@@ -58,11 +58,11 @@
       <if test="orderDate != null" >
         order_date,
       </if>
-      <if test="orderStartTime != null" >
-        order_start_time,
+      <if test="orderStart != null" >
+        order_start,
       </if>
-      <if test="orderEndTime != null" >
-        order_end_time,
+      <if test="orderEnd != null" >
+        order_end,
       </if>
       <if test="orderPurpose != null" >
         order_purpose,
@@ -90,11 +90,11 @@
       <if test="orderDate != null" >
         #{orderDate,jdbcType=DATE},
       </if>
-      <if test="orderStartTime != null" >
-        #{orderStartTime,jdbcType=TIME},
+      <if test="orderStart != null" >
+        #{orderStart,jdbcType=TIME},
       </if>
-      <if test="orderEndTime != null" >
-        #{orderEndTime,jdbcType=TIME},
+      <if test="orderEnd != null" >
+        #{orderEnd,jdbcType=TIME},
       </if>
       <if test="orderPurpose != null" >
         #{orderPurpose,jdbcType=VARCHAR},
@@ -122,11 +122,11 @@
       <if test="orderDate != null" >
         order_date = #{orderDate,jdbcType=DATE},
       </if>
-      <if test="orderStartTime != null" >
-        order_start_time = #{orderStartTime,jdbcType=TIME},
+      <if test="orderStart != null" >
+        order_start = #{orderStart,jdbcType=TIME},
       </if>
-      <if test="orderEndTime != null" >
-        order_end_time = #{orderEndTime,jdbcType=TIME},
+      <if test="orderEnd != null" >
+        order_end = #{orderEnd,jdbcType=TIME},
       </if>
       <if test="orderPurpose != null" >
         order_purpose = #{orderPurpose,jdbcType=VARCHAR},
@@ -144,8 +144,8 @@
       room_name = #{roomName,jdbcType=VARCHAR},
       order_tel = #{orderTel,jdbcType=BIGINT},
       order_date = #{orderDate,jdbcType=DATE},
-      order_start_time = #{orderStartTime,jdbcType=TIME},
-      order_end_time = #{orderEndTime,jdbcType=TIME},
+      order_start = #{orderStart,jdbcType=TIME},
+      order_end = #{orderEnd,jdbcType=TIME},
       order_purpose = #{orderPurpose,jdbcType=VARCHAR},
       order_status = #{orderStatus,jdbcType=INTEGER}
     where order_id = #{orderId,jdbcType=INTEGER}

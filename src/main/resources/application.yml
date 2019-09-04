@@ -43,7 +43,7 @@ spring:
   profiles: dev
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/reservation?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT
+    url: jdbc:mysql://localhost:3306/reservation?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
     password: 168168
   servlet:

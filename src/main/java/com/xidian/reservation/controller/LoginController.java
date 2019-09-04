@@ -42,13 +42,4 @@ public class LoginController {
         return consumerService.consumerLogin(loginData);
     }
 
-
-    @UserLoginToken
-    @RequestMapping(value = "/test", method = RequestMethod.GET)
-    public UniversalResponseBody test(HttpServletRequest httpServletRequest, @RequestParam("test") int test) {
-        String token = httpServletRequest.getHeader("token");
-        Long userId =  Long.parseLong(TokenUtil.getAppUID(token));
-        log.info("" + test);
-        return UniversalResponseBody.success(managerService.findManagerById(userId));
-    }
 }
