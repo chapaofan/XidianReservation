@@ -1,6 +1,9 @@
 package com.xidian.reservation.dao;
 
+import com.github.pagehelper.Page;
 import com.xidian.reservation.entity.Room;
+
+import java.util.List;
 
 public interface RoomMapper {
     int deleteByPrimaryKey(Integer roomId);
@@ -16,4 +19,6 @@ public interface RoomMapper {
     int updateByPrimaryKeySelective(Room record);
 
     int updateByPrimaryKey(Room record);
+
+    Page<Room> findAllRoom();
 }

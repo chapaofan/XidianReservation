@@ -1,6 +1,9 @@
 package com.xidian.reservation.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.xidian.reservation.dao.RoomMapper;
+import com.xidian.reservation.entity.Consumer;
 import com.xidian.reservation.entity.Room;
 import com.xidian.reservation.exceptionHandler.CommonEnum;
 import com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody;
@@ -43,7 +46,13 @@ public class RoomServiceImpl implements RoomService {
         }
     }
 
-    public List<Room> findRooms(int pageNum) {
-        return null;//TODO 分页插件
+    public UniversalResponseBody findRoomByPage(int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        PageInfo<Room> pageInfo = new PageInfo<>(roomMapper.findAllRoom());
+        return UniversalResponseBody.success(pageInfo);
+    }
+
+    public UniversalResponseBody findAllRoom(){
+        return UniversalResponseBody.success(roomMapper.findAllRoom());
     }
 }

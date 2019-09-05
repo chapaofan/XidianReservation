@@ -10,5 +10,7 @@ public interface RoomService {
 
     UniversalResponseBody deleteRoom(int roomId);
 
-    List<Room> findRooms(int pageNum);
+    UniversalResponseBody findRoomByPage(int pageNum, int pageSize);
+
+    UniversalResponseBody findAllRoom();
 }

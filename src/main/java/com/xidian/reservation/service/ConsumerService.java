@@ -4,6 +4,7 @@ import com.xidian.reservation.entity.Consumer;
 import com.xidian.reservation.exceptionHandler.Response.CacheResponseBody;
 import com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface ConsumerService {
@@ -16,5 +17,5 @@ public interface ConsumerService {
 
     Consumer findConsumerById(Long consumerId);
 
-    List<Consumer> findConsumers(int pageNum);
+    UniversalResponseBody findAllConsumers(int pageNum, int pageSize);
 }

@@ -5,7 +5,6 @@ import com.xidian.reservation.entity.Consumer;
 import com.xidian.reservation.entity.Room;
 import com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody;
 import com.xidian.reservation.service.ConsumerService;
-import com.xidian.reservation.service.ManagerService;
 import com.xidian.reservation.service.RoomService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +23,6 @@ import javax.validation.constraints.NotNull;
 @Slf4j
 @RequestMapping("/manager")
 public class ManagerController {
-    @Resource
-    private ManagerService managerService;
 
     @Resource
     private ConsumerService consumerService;
@@ -60,9 +57,9 @@ public class ManagerController {
 
     /**
      * @Description: 删除用户
-     * @Date:        21:14 2019/9/3
-     * @Param:       [consumerId]
-     * @return:      com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
+     * @Date: 21:14 2019/9/3
+     * @Param: [consumerId]
+     * @return: com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
      */
     @UserLoginToken
     @RequestMapping(value = "/delete/consumer/{consumerId}", method = RequestMethod.GET)
@@ -71,14 +68,50 @@ public class ManagerController {
     }
 
     /**
-     * @Description: 删除教室
-     * @Date:        21:28 2019/9/3
-     * @Param:       [roomId]
+     * @Description: 分页查看用户
+     * @Date:        20:57 2019/9/5
+     * @Param:       [pageNo, pageSize]
      * @return:      com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
+     */
+    @UserLoginToken
+    @RequestMapping(value = "/view/consumer/{pageNo}/{pageSize}", method = RequestMethod.GET)
+    public UniversalResponseBody viewUser(@PathVariable("pageNo") int pageNo,@PathVariable("pageSize") int pageSize){
+        return consumerService.findAllConsumers(pageNo,pageSize);
+    }
+
+    /**
+     * @Description: 删除教室
+     * @Date: 21:28 2019/9/3
+     * @Param: [roomId]
+     * @return: com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
      */
     @UserLoginToken
     @RequestMapping(value = "/delete/room/{roomId}", method = RequestMethod.GET)
     public UniversalResponseBody deleteRoom(@NotNull @PathVariable("roomId") Integer roomId) {
         return roomService.deleteRoom(roomId);
+    }
+
+    /**
+     * @Description: 分页查看教室
+     * @Date:        22:32 2019/9/5
+     * @Param:       [pageNo, pageSize]
+     * @return:      com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
+     */
+    @UserLoginToken
+    @RequestMapping(value = "/view/room/{pageNo}/{pageSize}", method = RequestMethod.GET)
+    public UniversalResponseBody viewRoomsByPage(@PathVariable("pageNo") int pageNo,@PathVariable("pageSize") int pageSize){
+        return roomService.findRoomByPage(pageNo,pageSize);
+    }
+
+    /**
+     * @Description: 查看所有教室
+     * @Date:        22:36 2019/9/5
+     * @Param:       []
+     * @return:      com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
+     */
+    @UserLoginToken
+    @RequestMapping(value = "/view/room/all", method = RequestMethod.GET)
+    public UniversalResponseBody viewAllRoom(){
+        return roomService.findAllRoom();
     }
 }

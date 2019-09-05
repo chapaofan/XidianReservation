@@ -1,19 +1,17 @@
 package com.xidian.reservation.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.xidian.reservation.dao.ConsumerMapper;
 import com.xidian.reservation.dto.TokenInfo;
 import com.xidian.reservation.entity.Consumer;
 import com.xidian.reservation.exceptionHandler.CommonEnum;
-import com.xidian.reservation.exceptionHandler.Response.CacheResponseBody;
 import com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody;
 import com.xidian.reservation.service.ConsumerService;
 import com.xidian.reservation.utils.MD5Util;
 import com.xidian.reservation.utils.TokenUtil;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * @author ：Maolin
@@ -48,7 +46,7 @@ public class ConsumerServiceImpl implements ConsumerService {
 
     public UniversalResponseBody saveConsumer(Consumer consumer) {
         Consumer res = consumerMapper.selectByPrimaryKey(consumer.getConsumerId());
-        if ( res!= null) {
+        if (res != null) {
             return UniversalResponseBody.error("701", "User already exists!");
         } else if (consumerMapper.insert(consumer) > 0) {
             return UniversalResponseBody.success();
@@ -60,7 +58,7 @@ public class ConsumerServiceImpl implements ConsumerService {
     public UniversalResponseBody deleteConsumer(Long consumerId) {
         if (consumerMapper.deleteByPrimaryKey(consumerId) > 0) {
             return UniversalResponseBody.success();
-        }else {
+        } else {
             return UniversalResponseBody.error("Failed user delete!");
         }
     }
@@ -69,8 +67,11 @@ public class ConsumerServiceImpl implements ConsumerService {
         return consumerMapper.selectByPrimaryKey(consumerId);
     }
 
-    public List<Consumer> findConsumers(int pageNum) {
-        return null;//TODO 分页查询，mybatis分页插件实现
+    public UniversalResponseBody findAllConsumers(int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        PageInfo<Consumer> pageInfo = new PageInfo<>(consumerMapper.selectAllConsumer());
+        return UniversalResponseBody.success(pageInfo);
     }
 
 }
+
