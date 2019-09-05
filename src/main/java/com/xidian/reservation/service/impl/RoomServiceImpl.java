@@ -3,15 +3,12 @@ package com.xidian.reservation.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xidian.reservation.dao.RoomMapper;
-import com.xidian.reservation.entity.Consumer;
 import com.xidian.reservation.entity.Room;
 import com.xidian.reservation.exceptionHandler.CommonEnum;
 import com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody;
 import com.xidian.reservation.service.RoomService;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * @author ：Maolin
