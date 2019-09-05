@@ -8,10 +8,8 @@ import com.xidian.reservation.service.ConsumerService;
 import com.xidian.reservation.service.ManagerService;
 import com.xidian.reservation.service.RoomService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 
@@ -67,8 +65,8 @@ public class ManagerController {
      * @return:      com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
      */
     @UserLoginToken
-    @RequestMapping(value = "/delete/consumer", method = RequestMethod.POST)
-    public UniversalResponseBody deleteUser(@NotNull @RequestParam("consumerId") Long consumerId) {
+    @RequestMapping(value = "/delete/consumer/{consumerId}", method = RequestMethod.GET)
+    public UniversalResponseBody deleteUser(@NotNull @PathVariable("consumerId") Long consumerId) {
         return consumerService.deleteConsumer(consumerId);
     }
 
@@ -79,8 +77,8 @@ public class ManagerController {
      * @return:      com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
      */
     @UserLoginToken
-    @RequestMapping(value = "/delete/room", method = RequestMethod.POST)
-    public UniversalResponseBody deleteRoom(@NotNull @RequestParam("roomId") Integer roomId) {
+    @RequestMapping(value = "/delete/room/{roomId}", method = RequestMethod.GET)
+    public UniversalResponseBody deleteRoom(@NotNull @PathVariable("roomId") Integer roomId) {
         return roomService.deleteRoom(roomId);
     }
 }

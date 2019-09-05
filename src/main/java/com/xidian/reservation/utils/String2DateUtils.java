@@ -97,5 +97,49 @@ public class String2DateUtils {
         }
         return null;
     }
+    
+    /**
+     * @Description: 比较时间不比较日期，time1 > time2 返回true，<=返回false
+     * @Date:        15:58 2019/9/5
+     * @Param:       [time1, time2]
+     * @return:      boolean
+     */
+    public static boolean compTime(Date time1, Date time2) {
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+            String s1 = formatter.format(time1);
+            String s2 = formatter.format(time2);
+            if (s1.indexOf(":") < 0 || s1.indexOf(":") < 0) {
+                System.out.println("格式不正确");
+            } else {
+                String[] array1 = s1.split(":");
+                int total1 = Integer.valueOf(array1[0]) * 3600 + Integer.valueOf(array1[1]) * 60 + Integer.valueOf(array1[2]);
+                String[] array2 = s2.split(":");
+                int total2 = Integer.valueOf(array2[0]) * 3600 + Integer.valueOf(array2[1]) * 60 + Integer.valueOf(array2[2]);
+                return total1 - total2 >= 0 ? true : false;
+            }
+        } catch (NumberFormatException e) {
+            // TODO Auto-generated catch block
+            return true;
+        }
+        return false;
+    }
 
+    public static boolean compTime(String s1, String s2) {
+        try {
+            if (s1.indexOf(":") < 0 || s1.indexOf(":") < 0) {
+                System.out.println("格式不正确");
+            } else {
+                String[] array1 = s1.split(":");
+                int total1 = Integer.valueOf(array1[0]) * 3600 + Integer.valueOf(array1[1]) * 60 + Integer.valueOf(array1[2]);
+                String[] array2 = s2.split(":");
+                int total2 = Integer.valueOf(array2[0]) * 3600 + Integer.valueOf(array2[1]) * 60 + Integer.valueOf(array2[2]);
+                return total1 - total2 >= 0 ? true : false;
+            }
+        } catch (NumberFormatException e) {
+            // TODO Auto-generated catch block
+            return true;
+        }
+        return false;
+    }
 }

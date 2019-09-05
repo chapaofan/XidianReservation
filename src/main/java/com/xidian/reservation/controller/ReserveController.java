@@ -5,11 +5,12 @@ import com.xidian.reservation.dao.ReserveMapper;
 import com.xidian.reservation.entity.Reserve;
 import com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody;
 import com.xidian.reservation.service.ReserveService;
+import com.xidian.reservation.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
-
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
@@ -24,8 +25,6 @@ import java.util.Date;
 @Slf4j
 @RequestMapping("/reserve")
 public class ReserveController {
-    @Resource
-    private ReserveMapper reserveMapper;
 
     @Resource
     private ReserveService reserveService;
@@ -38,11 +37,14 @@ public class ReserveController {
     }
 
 
-    @RequestMapping(value = "/save", method = RequestMethod.GET)
-    public UniversalResponseBody save(@NotNull Reserve reserve) {
-        System.out.println(reserve.toString());
-        //return reserveMapper.insert(reserve);
-        return null;
+    @UserLoginToken
+    @RequestMapping(value = "/order", method = RequestMethod.POST)
+    public UniversalResponseBody order(HttpServletRequest httpServletRequest, @NotNull Reserve reserve) {
+        String token = httpServletRequest.getHeader("token");
+        Long consumerId = Long.parseLong(TokenUtil.getAppUID(token));
+        reserve.setConsumerId(consumerId);
+        log.info(""+consumerId);
+        return reserveService.saveReserve(reserve);
     }
 
 }
