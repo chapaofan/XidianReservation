@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xidian.reservation.dao.ReserveMapper">
+    <resultMap id="BaseResultMap" type="com.xidian.reservation.entity.Reserve">
+        <id column="reserve_id" property="reserveId" jdbcType="INTEGER"/>
+        <result column="consumer_id" property="consumerId" jdbcType="BIGINT"/>
+        <result column="reserve_name" property="reserveName" jdbcType="VARCHAR"/>
+        <result column="room_name" property="roomName" jdbcType="VARCHAR"/>
+        <result column="reserve_tel" property="reserveTel" jdbcType="BIGINT"/>
+        <result column="reserve_date" property="reserveDate" jdbcType="DATE"/>
+        <result column="reserve_start" property="reserveStart" jdbcType="TIME"/>
+        <result column="reserve_end" property="reserveEnd" jdbcType="TIME"/>
+        <result column="reserve_purpose" property="reservePurpose" jdbcType="VARCHAR"/>
+        <result column="reserve_status" property="reserveStatus" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        reserve_id, consumer_id, reserve_name, room_name, reserve_tel, reserve_date, reserve_start,
+    reserve_end, reserve_purpose, reserve_status
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from reserve
+        where reserve_id = #{reserveId,jdbcType=INTEGER}
+    </select>
+    <select id="selectNotAllowTime" resultMap="BaseResultMap">
+        SELECT
+            reserve_id, consumer_id, reserve_name,
+            reserve.room_name, reserve_tel, reserve_date,
+            reserve_start, reserve_end, reserve_purpose,
+            reserve_status
+        FROM
+        reserve,
+        room
+        WHERE
+        reserve.reserve_date = DATE_FORMAT(#{reserveDate,jdbcType=DATE},'%Y-%m-%d')
+        AND reserve.room_name = ( SELECT room.room_name FROM room WHERE room.room_id = #{roomId,jdbcType=INTEGER})
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from reserve
+        where reserve_id = #{reserveId,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.xidian.reservation.entity.Reserve">
+        insert into reserve (reserve_id, consumer_id, reserve_name,
+                             room_name, reserve_tel, reserve_date,
+                             reserve_start, reserve_end, reserve_purpose,
+                             reserve_status)
+        values (#{reserveId,jdbcType=INTEGER}, #{consumerId,jdbcType=BIGINT}, #{reserveName,jdbcType=VARCHAR},
+                #{roomName,jdbcType=VARCHAR}, #{reserveTel,jdbcType=BIGINT}, #{reserveDate,jdbcType=DATE},
+                #{reserveStart,jdbcType=TIME}, #{reserveEnd,jdbcType=TIME}, #{reservePurpose,jdbcType=VARCHAR},
+                #{reserveStatus,jdbcType=INTEGER})
+    </insert>
+    <insert id="insertSelective" parameterType="com.xidian.reservation.entity.Reserve">
+        insert into reserve
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="reserveId != null">
+                reserve_id,
+            </if>
+            <if test="consumerId != null">
+                consumer_id,
+            </if>
+            <if test="reserveName != null">
+                reserve_name,
+            </if>
+            <if test="roomName != null">
+                room_name,
+            </if>
+            <if test="reserveTel != null">
+                reserve_tel,
+            </if>
+            <if test="reserveDate != null">
+                reserve_date,
+            </if>
+            <if test="reserveStart != null">
+                reserve_start,
+            </if>
+            <if test="reserveEnd != null">
+                reserve_end,
+            </if>
+            <if test="reservePurpose != null">
+                reserve_purpose,
+            </if>
+            <if test="reserveStatus != null">
+                reserve_status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="reserveId != null">
+                #{reserveId,jdbcType=INTEGER},
+            </if>
+            <if test="consumerId != null">
+                #{consumerId,jdbcType=BIGINT},
+            </if>
+            <if test="reserveName != null">
+                #{reserveName,jdbcType=VARCHAR},
+            </if>
+            <if test="roomName != null">
+                #{roomName,jdbcType=VARCHAR},
+            </if>
+            <if test="reserveTel != null">
+                #{reserveTel,jdbcType=BIGINT},
+            </if>
+            <if test="reserveDate != null">
+                #{reserveDate,jdbcType=DATE},
+            </if>
+            <if test="reserveStart != null">
+                #{reserveStart,jdbcType=TIME},
+            </if>
+            <if test="reserveEnd != null">
+                #{reserveEnd,jdbcType=TIME},
+            </if>
+            <if test="reservePurpose != null">
+                #{reservePurpose,jdbcType=VARCHAR},
+            </if>
+            <if test="reserveStatus != null">
+                #{reserveStatus,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.xidian.reservation.entity.Reserve">
+        update reserve
+        <set>
+            <if test="consumerId != null">
+                consumer_id = #{consumerId,jdbcType=BIGINT},
+            </if>
+            <if test="reserveName != null">
+                reserve_name = #{reserveName,jdbcType=VARCHAR},
+            </if>
+            <if test="roomName != null">
+                room_name = #{roomName,jdbcType=VARCHAR},
+            </if>
+            <if test="reserveTel != null">
+                reserve_tel = #{reserveTel,jdbcType=BIGINT},
+            </if>
+            <if test="reserveDate != null">
+                reserve_date = #{reserveDate,jdbcType=DATE},
+            </if>
+            <if test="reserveStart != null">
+                reserve_start = #{reserveStart,jdbcType=TIME},
+            </if>
+            <if test="reserveEnd != null">
+                reserve_end = #{reserveEnd,jdbcType=TIME},
+            </if>
+            <if test="reservePurpose != null">
+                reserve_purpose = #{reservePurpose,jdbcType=VARCHAR},
+            </if>
+            <if test="reserveStatus != null">
+                reserve_status = #{reserveStatus,jdbcType=INTEGER},
+            </if>
+        </set>
+        where reserve_id = #{reserveId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.xidian.reservation.entity.Reserve">
+        update reserve
+        set consumer_id     = #{consumerId,jdbcType=BIGINT},
+            reserve_name    = #{reserveName,jdbcType=VARCHAR},
+            room_name       = #{roomName,jdbcType=VARCHAR},
+            reserve_tel     = #{reserveTel,jdbcType=BIGINT},
+            reserve_date    = #{reserveDate,jdbcType=DATE},
+            reserve_start   = #{reserveStart,jdbcType=TIME},
+            reserve_end     = #{reserveEnd,jdbcType=TIME},
+            reserve_purpose = #{reservePurpose,jdbcType=VARCHAR},
+            reserve_status  = #{reserveStatus,jdbcType=INTEGER}
+        where reserve_id = #{reserveId,jdbcType=INTEGER}
+    </update>
+</mapper>
