@@ -3,10 +3,7 @@ package com.xidian.reservation.service;
 import com.xidian.reservation.entity.Reserve;
 import com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody;
 
-import java.lang.reflect.Array;
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 public interface ReserveService {
 
@@ -16,12 +13,12 @@ public interface ReserveService {
 
     UniversalResponseBody updateReserve(Reserve reserve);
 
-    List<Reserve> findHistoryReserves(Long consumerId, int pageNum);
+    UniversalResponseBody findHistoryReserves(Long consumerId, int pageNum, int pageSize);
 
-    List<Reserve> findNotStartReserves(Long consumerId, int pageNum);
+    UniversalResponseBody findNotStartReserves(Long consumerId, int pageNum, int pageSize);
+
+    UniversalResponseBody findNotStartAndStatus0(int pageNum, int pageSize);
 
     UniversalResponseBody selectNotAllowTime(int roomId, Date day) throws Exception;
-
-    boolean allowInsert(Reserve reserve) throws Exception;
 
 }

@@ -1,5 +1,6 @@
 package com.xidian.reservation.dao;
 
+import com.github.pagehelper.Page;
 import com.xidian.reservation.entity.Reserve;
 
 import java.util.Date;
@@ -20,4 +21,9 @@ public interface ReserveMapper {
 
     int updateByPrimaryKey(Reserve record);
 
+    Page<Reserve> findHistoryReserveByConsumerId(Long consumerId);
+
+    Page<Reserve> findNotStartReserveByConsumer(Long consumerId);
+
+    Page<Reserve> findNotStartAndStatus0();
 }

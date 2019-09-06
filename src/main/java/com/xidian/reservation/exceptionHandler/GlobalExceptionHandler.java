@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
+import java.sql.SQLSyntaxErrorException;
 
 /**
  * @author ：Maolin
@@ -65,12 +66,10 @@ public class GlobalExceptionHandler {
      * @param e
      * @return
      */
-    @ResponseBody
-    @ExceptionHandler(value =SQLException.class)
-    public UniversalResponseBody exceptionHandler(HttpServletRequest req, SQLException e){
+    /*@ResponseBody
+    @ExceptionHandler(value = SQLSyntaxErrorException.class)
+    public UniversalResponseBody exceptionHandler(HttpServletRequest req, SQLSyntaxErrorException e){
         log.error("mysql语句异常，原因：",e);
         return UniversalResponseBody.error(CommonEnum.SQL_STATEMENT_ERROR);
-    }
-    //DuplicateKeyException
-      //      SQLIntegrityConstraintViolationException
+    }*/
 }

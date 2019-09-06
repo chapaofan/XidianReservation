@@ -1,12 +1,16 @@
 package com.xidian.reservation.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.xidian.reservation.dao.ReserveMapper;
 import com.xidian.reservation.dao.RoomMapper;
 import com.xidian.reservation.entity.Reserve;
 import com.xidian.reservation.entity.Room;
+import com.xidian.reservation.exceptionHandler.CommonEnum;
 import com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody;
 import com.xidian.reservation.service.ReserveService;
 import com.xidian.reservation.utils.String2DateUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -24,6 +28,7 @@ import java.util.Set;
  * @description： OrderService 服务层
  * @version: 1.0
  */
+@Slf4j
 @Service
 public class ReserveServiceImpl implements ReserveService {
 
@@ -37,43 +42,35 @@ public class ReserveServiceImpl implements ReserveService {
         Date start = reserve.getReserveStart();
         Date end = reserve.getReserveEnd();
         Room room = roomMapper.selectByName(reserve.getRoomName());
-        List<Reserve> res = reserveMapper.selectNotAllowTime(room.getRoomId(), reserve.getReserveDate());
-        boolean flag = true;
-        for (Reserve result : res) {
-            Date startR = result.getReserveStart();
-            Date endR = result.getReserveEnd();
-            //SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
-            //String time = formatter.format(date);
+        if (room == null) {
+            log.error("无此教室，插入失败！");
+            return UniversalResponseBody.error(CommonEnum.NOT_FOUND);
+        } else {
+            if (String2DateUtils.compTime(start, end)) {
+                log.error("结束时间在开始时间之前！");
+                return UniversalResponseBody.error(CommonEnum.BODY_NOT_MATCH);
+            }
+            List<Reserve> res = reserveMapper.selectNotAllowTime(room.getRoomId(), reserve.getReserveDate());
+            boolean flag = true;
+            for (Reserve result : res) {
+                if (result.getReserveStatus() == 200 || result.getReserveStatus() == 500) {
+                    continue;
+                }
+                Date startR = result.getReserveStart();
+                Date endR = result.getReserveEnd();
 
-            if (!(String2DateUtils.compTime(startR, end) || String2DateUtils.compTime(start, endR))) {
-                flag = false;
-                break;
+                if (!(String2DateUtils.compTime(startR, end) || String2DateUtils.compTime(start, endR))) {
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag) {
+                reserveMapper.insert(reserve);
+                return UniversalResponseBody.success();
+            } else {
+                return UniversalResponseBody.error("701", "Time occupy!");
             }
         }
-        if (flag) {
-            reserveMapper.insert(reserve);
-            return UniversalResponseBody.success();
-        } else {
-            return UniversalResponseBody.error("701", "Time occupy!");
-        }
-    }
-
-    public UniversalResponseBody deleteReserve(Integer reserveId) {
-        //return orderMapper.deleteByPrimaryKey(orderId)>0;
-        return null;
-    }
-
-    public UniversalResponseBody updateReserve(Reserve reserve) {
-        return null;
-        //return orderMapper.updateByPrimaryKey(order) > 0;
-    }
-
-    public List<Reserve> findHistoryReserves(Long consumerId, int pageNum) {
-        return null;//TODO return selectHistoryOrders;
-    }
-
-    public List<Reserve> findNotStartReserves(Long consumerId, int pageNum) {
-        return null;//TODO return orderMapper.selectNotStartOrders;
     }
 
     public UniversalResponseBody selectNotAllowTime(int roomId, Date reserveDate) throws Exception {
@@ -90,8 +87,37 @@ public class ReserveServiceImpl implements ReserveService {
         return UniversalResponseBody.success(res);
     }
 
-    public boolean allowInsert(Reserve reserve) throws Exception {
-        return false;
-        //TODO
+
+    public UniversalResponseBody deleteReserve(Integer reserveId) {
+        //return orderMapper.deleteByPrimaryKey(orderId)>0;
+        return null;
     }
+
+    public UniversalResponseBody updateReserve(Reserve reserve) {
+        if (reserveMapper.updateByPrimaryKey(reserve) > 0) {
+            return UniversalResponseBody.success();
+        } else {
+            return UniversalResponseBody.error("Failed reserve update!");
+        }
+    }
+
+    public UniversalResponseBody findHistoryReserves(Long consumerId, int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        PageInfo<Reserve> pageInfo = new PageInfo<>(reserveMapper.findHistoryReserveByConsumerId(consumerId));
+        return UniversalResponseBody.success(pageInfo);
+    }
+
+    public UniversalResponseBody findNotStartReserves(Long consumerId, int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        PageInfo<Reserve> pageInfo = new PageInfo<>(reserveMapper.findNotStartReserveByConsumer(consumerId));
+        return UniversalResponseBody.success(pageInfo);
+    }
+
+    public UniversalResponseBody findNotStartAndStatus0(int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        PageInfo<Reserve> pageInfo = new PageInfo<>(reserveMapper.findNotStartAndStatus0());
+        return UniversalResponseBody.success(pageInfo);
+    }
+
+
 }

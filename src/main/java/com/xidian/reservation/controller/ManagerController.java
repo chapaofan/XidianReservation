@@ -74,9 +74,9 @@ public class ManagerController {
      * @return:      com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
      */
     @UserLoginToken
-    @RequestMapping(value = "/view/consumer/{pageNo}/{pageSize}", method = RequestMethod.GET)
-    public UniversalResponseBody viewUser(@PathVariable("pageNo") int pageNo,@PathVariable("pageSize") int pageSize){
-        return consumerService.findAllConsumers(pageNo,pageSize);
+    @RequestMapping(value = "/view/consumer/{pageNum}/{pageSize}", method = RequestMethod.GET)
+    public UniversalResponseBody viewUser(@PathVariable("pageNum") int pageNum,@PathVariable("pageSize") int pageSize){
+        return consumerService.findAllConsumers(pageNum,pageSize);
     }
 
     /**
@@ -98,9 +98,9 @@ public class ManagerController {
      * @return:      com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
      */
     @UserLoginToken
-    @RequestMapping(value = "/view/room/{pageNo}/{pageSize}", method = RequestMethod.GET)
-    public UniversalResponseBody viewRoomsByPage(@PathVariable("pageNo") int pageNo,@PathVariable("pageSize") int pageSize){
-        return roomService.findRoomByPage(pageNo,pageSize);
+    @RequestMapping(value = "/view/room/{pageNum}/{pageSize}", method = RequestMethod.GET)
+    public UniversalResponseBody viewRoomsByPage(@PathVariable("pageNum") int pageNum,@PathVariable("pageSize") int pageSize){
+        return roomService.findRoomByPage(pageNum,pageSize);
     }
 
     /**
@@ -114,4 +114,6 @@ public class ManagerController {
     public UniversalResponseBody viewAllRoom(){
         return roomService.findAllRoom();
     }
+
+
 }

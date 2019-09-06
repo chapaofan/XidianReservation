@@ -24,18 +24,80 @@
         where reserve_id = #{reserveId,jdbcType=INTEGER}
     </select>
     <select id="selectNotAllowTime" resultMap="BaseResultMap">
-        SELECT
-            reserve_id, consumer_id, reserve_name,
-            reserve.room_name, reserve_tel, reserve_date,
-            reserve_start, reserve_end, reserve_purpose,
-            reserve_status
-        FROM
-        reserve,
-        room
-        WHERE
-        reserve.reserve_date = DATE_FORMAT(#{reserveDate,jdbcType=DATE},'%Y-%m-%d')
-        AND reserve.room_name = ( SELECT room.room_name FROM room WHERE room.room_id = #{roomId,jdbcType=INTEGER})
+        SELECT reserve_id,
+               consumer_id,
+               reserve_name,
+               reserve.room_name,
+               reserve_tel,
+               reserve_date,
+               reserve_start,
+               reserve_end,
+               reserve_purpose,
+               reserve_status
+        FROM reserve,
+             room
+        WHERE reserve.reserve_date = DATE_FORMAT(#{reserveDate,jdbcType=DATE}, '%Y-%m-%d')
+          AND (reserve_status = 0 OR reserve_status = 100)
+          AND reserve.room_name = (SELECT room.room_name FROM room WHERE room.room_id = #{roomId,jdbcType=INTEGER})
     </select>
+    <select id="findHistoryReserveByConsumerId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        reserve
+        WHERE
+        consumer_id = #{consumerId,jdbcType=BIGINT}
+        AND(
+        (DATE_FORMAT( NOW(), '%Y-%m-%d' ) = reserve_date
+        AND TIMEDIFF(DATE_FORMAT( NOW(), '%H:%i:%s' ),reserve_end)> 0)
+        OR DATEDIFF( DATE_FORMAT( NOW(), '%Y-%m-%d' ), reserve_date )> 0)
+        ORDER BY reserve_date,reserve_start DESC
+
+    </select>
+    <select id="findNotStartReserveByConsumer" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        reserve
+        WHERE
+        consumer_id = #{consumerId,jdbcType=BIGINT}
+        AND (
+        DATEDIFF( reserve_date, DATE_FORMAT( NOW(), '%Y-%m-%d' ) )> 0
+        OR (
+        (
+        DATE_FORMAT( NOW(), '%Y-%m-%d' ) = reserve_date
+        AND (
+        TIMEDIFF( DATE_FORMAT( NOW(), '%H:%i:%s' ), reserve_start )) > 0
+        AND TIMEDIFF( reserve_end, DATE_FORMAT( NOW(), '%H:%i:%s' ) )> 0
+        )
+        )
+        )
+        ORDER BY
+        reserve_date,
+        reserve_start
+    </select>
+    <select id="findNotStartAndStatus0" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        reserve
+        WHERE
+        reserve_status = 0
+        AND (
+        DATEDIFF( reserve_date, DATE_FORMAT( NOW(), '%Y-%m-%d' ) )> 0
+        OR (
+        (
+        DATE_FORMAT( NOW(), '%Y-%m-%d' ) = reserve_date
+        AND (
+        TIMEDIFF( DATE_FORMAT( NOW(), '%H:%i:%s' ), reserve_start )) > 0
+        AND TIMEDIFF( reserve_end, DATE_FORMAT( NOW(), '%H:%i:%s' ) )> 0
+        )
+        )
+        )
+        ORDER BY
+        reserve_id
+    </select>
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete
         from reserve
