@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.xidian.reservation.annotation.ManagerLoginToken;
 import com.xidian.reservation.annotation.PassToken;
 import com.xidian.reservation.annotation.UserLoginToken;
 import com.xidian.reservation.exceptionHandler.BizException;
@@ -70,7 +71,38 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                     throw new BizException("600","status：401 未授权");
                 }
 
-                if (managerService.findManagerById(userId) == null && consumerService.findConsumerById(userId) == null) {
+                if (consumerService.findConsumerById(userId) == null) {
+                    throw new BizException("600","User does not exist!");
+                }
+                // 验证 token
+                JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(SECRET)).build();
+                try {
+                    jwtVerifier.verify(token);
+                } catch (JWTVerificationException e) {
+                    throw new BizException("600","status：401 未授权");
+                }
+                return true;
+            }
+        }
+        //检查有没有需要用户权限的注解
+        if (method.isAnnotationPresent(ManagerLoginToken.class)) {
+            ManagerLoginToken managerLoginToken = method.getAnnotation(ManagerLoginToken.class);
+            if (managerLoginToken.required()) {
+                // 执行认证
+                if (token == null) {
+                    throw new BizException("600","Token does not exist! Please login again!");
+                }
+                // 获取 token 中的 user id（用户名）
+                Long userId;
+                try {
+                    userId =  Long.parseLong(TokenUtil.getAppUID(token));
+                    //System.out.println(userName);
+                    //userName = JWT.decode(token).getAudience().get(0);
+                } catch (JWTDecodeException j) {
+                    throw new BizException("600","status：401 未授权");
+                }
+
+                if (managerService.findManagerById(userId) == null) {
                     throw new BizException("600","User does not exist!");
                 }
                 // 验证 token

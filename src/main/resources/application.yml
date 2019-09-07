@@ -16,20 +16,7 @@ spring:
   profiles:
     active: dev
 
-#  课室编号
-#  {{keyword1.DATA}}
-#
-#  预约人
-#  {{keyword2.DATA}}
-#
-#  预约结果
-#  {{keyword3.DATA}}
-#
-#  预约时间
-#  {{keyword4.DATA}}
-#
-#  备注
-#  {{keyword5.DATA}}
+
 
 wx:
   appid: wx2709ce70a691dad4

@@ -1,9 +1,12 @@
 package com.xidian.reservation.controller;
 
+import com.xidian.reservation.annotation.ManagerLoginToken;
 import com.xidian.reservation.annotation.UserLoginToken;
 import com.xidian.reservation.entity.Reserve;
 import com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody;
 import com.xidian.reservation.service.ReserveService;
+import com.xidian.reservation.service.WxPushService;
+import com.xidian.reservation.utils.EmojiCharacterUtil;
 import com.xidian.reservation.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -28,6 +32,9 @@ public class ReserveController {
 
     @Resource
     private ReserveService reserveService;
+
+    @Resource
+    private WxPushService wxPushService;
 
 
     /**
@@ -54,6 +61,9 @@ public class ReserveController {
     public UniversalResponseBody order(HttpServletRequest httpServletRequest, @NotNull Reserve reserve) {
         String token = httpServletRequest.getHeader("token");
         Long consumerId = Long.parseLong(TokenUtil.getAppUID(token));
+
+        //过滤表情包
+        reserve.setReservePurpose(EmojiCharacterUtil.filter(reserve.getReservePurpose()));
         reserve.setConsumerId(consumerId);
         reserve.setReserveStatus(0);
         //log.info(""+consumerId);
@@ -99,7 +109,7 @@ public class ReserveController {
      * @Param: [pageNum, pageSize]
      * @return: com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
      */
-    @UserLoginToken
+    @ManagerLoginToken
     @RequestMapping(value = "/apply/{pageNum}/{pageSize}", method = RequestMethod.GET)
     public UniversalResponseBody applyReserve(@PathVariable("pageNum") int pageNum,
                                               @PathVariable("pageSize") int pageSize) {
@@ -113,7 +123,7 @@ public class ReserveController {
      * @Param: [reserveId]
      * @return: com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
      */
-    @UserLoginToken
+    @ManagerLoginToken
     @RequestMapping(value = "/apply/details/{reserveId}", method = RequestMethod.GET)
     public UniversalResponseBody applyDetails(@PathVariable("reserveId") Integer reserveId) {
         String otherThing = "用完后请打扫！";
@@ -129,19 +139,33 @@ public class ReserveController {
      * @Param: [reserveId, otherThing, shortMessage]
      * @return: com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
      */
-    @UserLoginToken
+    @ManagerLoginToken
     @RequestMapping(value = "/apply/agree", method = RequestMethod.POST)
     public UniversalResponseBody applyAgree(@NotNull @RequestParam("reserveId") Integer reserveId, @NotNull @RequestParam("otherThing") String otherThing,
                                             @NotNull @RequestParam("shortMessage") String shortMessage, @NotNull @RequestParam("consumerId") Long consumerId,
-                                            @NotNull @RequestParam("wxCode") Long wxCode, @NotNull @RequestParam("formId") String formId) {
-        int status = 100;
+                                            @NotNull @RequestParam("formId") String formId) throws Exception {
+
+        //reserveStatus:100审核通过 500审核不通过 200取消会议
         String WxMSS = otherThing + " " + shortMessage;
-        //TODO 启用发送模板消息
-        //if (reserveService.updateStatus(reserveId,status) && 模板消息发送成功){
-        if (reserveService.updateStatus(reserveId, status)) {
-            return UniversalResponseBody.success();
+        Reserve reserve = reserveService.findReserveByReserveId(reserveId);
+        if (reserve == null) {
+            return UniversalResponseBody.error("Query data is empty!");
         } else {
-            return UniversalResponseBody.error("Template message sending failure or data update failure!");
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            String reserveDate = formatter.format(reserve.getReserveDate());
+            SimpleDateFormat formatter2 = new SimpleDateFormat("HH:mm:ss");
+            String startTime = formatter2.format(reserve.getReserveStart());
+            String endTime = formatter2.format(reserve.getReserveEnd());
+            String reserveDateTime = reserveDate + " " + startTime + "--" + endTime;
+
+            String result = wxPushService.wxPushOneUser(reserve.getConsumerId(), formId, reserve.getRoomName(), reserve.getReserveName(), "审核通过",
+                    reserveDateTime, WxMSS);
+            reserve.setReserveStatus(100);
+            if (reserveService.updateReserve(reserve)) {
+                return UniversalResponseBody.success();
+            } else {
+                return UniversalResponseBody.error("Data update failure!");
+            }
         }
 
     }
@@ -152,15 +176,30 @@ public class ReserveController {
      * @Param: [reserveId]
      * @return: com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
      */
-    @UserLoginToken
+    @ManagerLoginToken
     @RequestMapping(value = "/apply/disagree", method = RequestMethod.POST)
     public UniversalResponseBody applyAgree(@RequestParam("reserveId") Integer reserveId, @NotNull @RequestParam("consumerId") Long consumerId,
-                                            @NotNull @RequestParam("wxCode") Long wxCode, @NotNull @RequestParam("formId") String formId) {
-        int status = 500;//100审核通过 500审核不通过 200取消会议
-        if (reserveService.updateStatus(reserveId, status)) {
-            return UniversalResponseBody.success();
+                                            @NotNull @RequestParam("formId") String formId) throws Exception {
+        //reserveStatus:100审核通过 500审核不通过 200取消会议
+
+        Reserve reserve = reserveService.findReserveByReserveId(reserveId);
+        if (reserve == null) {
+            return UniversalResponseBody.error("Query data is empty!");
         } else {
-            return UniversalResponseBody.error("Data update failure!");
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            String reserveDate = formatter.format(reserve.getReserveDate());
+            SimpleDateFormat formatter2 = new SimpleDateFormat("HH:mm:ss");
+            String startTime = formatter2.format(reserve.getReserveStart());
+            String endTime = formatter2.format(reserve.getReserveEnd());
+            String reserveDateTime = reserveDate + " " + startTime + "--" + endTime;
+            String result = wxPushService.wxPushOneUser(reserve.getConsumerId(), formId, reserve.getRoomName(), reserve.getReserveName(), "审核不通过",
+                    reserveDateTime, "审核不通过，有问题请联系管理员");
+            reserve.setReserveStatus(500);
+            if (reserveService.updateReserve(reserve)) {
+                return UniversalResponseBody.success();
+            } else {
+                return UniversalResponseBody.error("Data update failure!");
+            }
         }
     }
 

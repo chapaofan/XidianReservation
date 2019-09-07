@@ -106,7 +106,12 @@ public class EmojiCharacterUtil {
         return sb.toString();
     }
 
-    /** 解析可见字符标识字符串 */
+    /**
+     * @Description: 解析可见字符标识字符串
+     * @Date:        15:10 2019/9/7
+     * @Param:       [src]
+     * @return:      java.lang.String
+     */
     public static String reverse(String src) {
         // 查找对应编码的标识位
         if (StringUtils.isBlank(src)) {
@@ -171,6 +176,12 @@ public class EmojiCharacterUtil {
         return sb.toString();
     }
 
+    /**
+     * @Description: 过滤表情包
+     * @Date:        15:09 2019/9/7
+     * @Param:       [src]
+     * @return:      java.lang.String
+     */
     public static String filter(String src) {
         if (src == null) {
             return null;

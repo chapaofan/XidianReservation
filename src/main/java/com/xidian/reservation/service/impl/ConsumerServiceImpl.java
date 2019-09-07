@@ -3,13 +3,16 @@ package com.xidian.reservation.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xidian.reservation.dao.ConsumerMapper;
+import com.xidian.reservation.dao.WxInformationMapper;
 import com.xidian.reservation.dto.TokenInfo;
 import com.xidian.reservation.entity.Consumer;
+import com.xidian.reservation.entity.WxInformation;
 import com.xidian.reservation.exceptionHandler.CommonEnum;
 import com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody;
 import com.xidian.reservation.service.ConsumerService;
 import com.xidian.reservation.utils.MD5Util;
 import com.xidian.reservation.utils.TokenUtil;
+import com.xidian.reservation.utils.WeChatUtil;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 
@@ -27,8 +30,14 @@ public class ConsumerServiceImpl implements ConsumerService {
     @Resource
     private ConsumerMapper consumerMapper;
 
+    @Resource
+    private WxInformationMapper wxInformationMapper;
 
-    public UniversalResponseBody consumerLogin(Consumer loginData) throws Exception {
+    @Resource
+    private WeChatUtil weChatUtil;
+
+
+    public UniversalResponseBody consumerLogin(Consumer loginData,String code) throws Exception {
         Consumer consumer = consumerMapper.selectByPrimaryKey(loginData.getConsumerId());
         if (consumer == null) {
             return UniversalResponseBody.error("-2", "User does not exist!");
@@ -37,6 +46,9 @@ public class ConsumerServiceImpl implements ConsumerService {
         } else if (!consumer.getConsumerName().equals(loginData.getConsumerName())) {
             return UniversalResponseBody.error("-3", "Please check if the name is correct！");
         } else {
+            String openId = weChatUtil.getOpenId(code);
+            WxInformation wxInformation = new WxInformation(loginData.getConsumerId(),openId);
+            wxInformationMapper.insert(wxInformation);
             String token = TokenUtil.getToken("" + consumer.getConsumerId());
             //密码进行加密输出
             consumer.setConsumerPassword(MD5Util.encrypt(consumer.getConsumerPassword()));

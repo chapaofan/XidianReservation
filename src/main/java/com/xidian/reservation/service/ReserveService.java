@@ -11,7 +11,7 @@ public interface ReserveService {
 
     UniversalResponseBody deleteReserve(Integer reserveId);
 
-    UniversalResponseBody updateReserve(Reserve reserve);
+    boolean updateReserve(Reserve reserve);
 
     UniversalResponseBody findHistoryReserves(Long consumerId, int pageNum, int pageSize);
 
@@ -24,5 +24,7 @@ public interface ReserveService {
     UniversalResponseBody findReserveDetails(Integer reserveId, String otherThing, String shortMessage);
 
     boolean updateStatus(Integer reserveId,Integer status);
+
+    Reserve findReserveByReserveId(Integer reserveId);
 
 }

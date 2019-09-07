@@ -92,12 +92,8 @@ public class ReserveServiceImpl implements ReserveService {
         return UniversalResponseBody.success(reserveMapper.deleteByPrimaryKey(reserveId));
     }
 
-    public UniversalResponseBody updateReserve(Reserve reserve) {
-        if (reserveMapper.updateByPrimaryKey(reserve) > 0) {
-            return UniversalResponseBody.success();
-        } else {
-            return UniversalResponseBody.error("Failed reserve update!");
-        }
+    public boolean updateReserve(Reserve reserve) {
+        return reserveMapper.updateByPrimaryKey(reserve) > 0;
     }
 
     public UniversalResponseBody findHistoryReserves(Long consumerId, int pageNum, int pageSize) {
@@ -122,14 +118,18 @@ public class ReserveServiceImpl implements ReserveService {
         return UniversalResponseBody.success(new ReserveInfo(reserveMapper.selectByPrimaryKey(reserveId), otherThing, shortMessage));
     }
 
-    public boolean updateStatus(Integer reserveId,Integer status){
+    public boolean updateStatus(Integer reserveId, Integer status) {
         Reserve reserve = reserveMapper.selectByPrimaryKey(reserveId);
-        if (reserve == null){
+        if (reserve == null) {
             log.error("reserveId查询结果为空！");
             return false;
-        }else {
+        } else {
             reserve.setReserveStatus(status);
-            return reserveMapper.updateByPrimaryKey(reserve)>0;
+            return reserveMapper.updateByPrimaryKey(reserve) > 0;
         }
+    }
+
+    public Reserve findReserveByReserveId(Integer reserveId) {
+        return reserveMapper.selectByPrimaryKey(reserveId);
     }
 }

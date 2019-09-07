@@ -1,5 +1,6 @@
 package com.xidian.reservation.controller;
 
+import com.xidian.reservation.annotation.ManagerLoginToken;
 import com.xidian.reservation.annotation.UserLoginToken;
 import com.xidian.reservation.entity.Consumer;
 import com.xidian.reservation.entity.Room;
@@ -36,7 +37,7 @@ public class ManagerController {
      * @Param: [room]
      * @return: com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
      */
-    @UserLoginToken
+    @ManagerLoginToken
     @RequestMapping(value = "/add/room", method = RequestMethod.POST)
     public UniversalResponseBody addRoom(@NotNull Room room) {
         return roomService.saveRoom(room);
@@ -48,7 +49,7 @@ public class ManagerController {
      * @Param: [consumer]
      * @return: com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
      */
-    @UserLoginToken
+    @ManagerLoginToken
     @RequestMapping(value = "/add/consumer", method = RequestMethod.POST)
     public UniversalResponseBody addUser(@NotNull Consumer consumer) {
         return consumerService.saveConsumer(consumer);
@@ -61,7 +62,7 @@ public class ManagerController {
      * @Param: [consumerId]
      * @return: com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
      */
-    @UserLoginToken
+    @ManagerLoginToken
     @RequestMapping(value = "/delete/consumer/{consumerId}", method = RequestMethod.GET)
     public UniversalResponseBody deleteUser(@NotNull @PathVariable("consumerId") Long consumerId) {
         return consumerService.deleteConsumer(consumerId);
@@ -73,7 +74,7 @@ public class ManagerController {
      * @Param:       [pageNo, pageSize]
      * @return:      com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
      */
-    @UserLoginToken
+    @ManagerLoginToken
     @RequestMapping(value = "/view/consumer/{pageNum}/{pageSize}", method = RequestMethod.GET)
     public UniversalResponseBody viewUser(@PathVariable("pageNum") int pageNum,@PathVariable("pageSize") int pageSize){
         return consumerService.findAllConsumers(pageNum,pageSize);
@@ -85,7 +86,7 @@ public class ManagerController {
      * @Param: [roomId]
      * @return: com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
      */
-    @UserLoginToken
+    @ManagerLoginToken
     @RequestMapping(value = "/delete/room/{roomId}", method = RequestMethod.GET)
     public UniversalResponseBody deleteRoom(@NotNull @PathVariable("roomId") Integer roomId) {
         return roomService.deleteRoom(roomId);
@@ -97,7 +98,7 @@ public class ManagerController {
      * @Param:       [pageNo, pageSize]
      * @return:      com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
      */
-    @UserLoginToken
+    @ManagerLoginToken
     @RequestMapping(value = "/view/room/{pageNum}/{pageSize}", method = RequestMethod.GET)
     public UniversalResponseBody viewRoomsByPage(@PathVariable("pageNum") int pageNum,@PathVariable("pageSize") int pageSize){
         return roomService.findRoomByPage(pageNum,pageSize);
@@ -109,7 +110,7 @@ public class ManagerController {
      * @Param:       []
      * @return:      com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
      */
-    @UserLoginToken
+    @ManagerLoginToken
     @RequestMapping(value = "/view/room/all", method = RequestMethod.GET)
     public UniversalResponseBody viewAllRoom(){
         return roomService.findAllRoom();
