@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xidian.reservation.dao.ReserveMapper;
 import com.xidian.reservation.dao.RoomMapper;
+import com.xidian.reservation.dto.ReserveInfo;
 import com.xidian.reservation.entity.Reserve;
 import com.xidian.reservation.entity.Room;
 import com.xidian.reservation.exceptionHandler.CommonEnum;
@@ -14,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
@@ -89,8 +89,7 @@ public class ReserveServiceImpl implements ReserveService {
 
 
     public UniversalResponseBody deleteReserve(Integer reserveId) {
-        //return orderMapper.deleteByPrimaryKey(orderId)>0;
-        return null;
+        return UniversalResponseBody.success(reserveMapper.deleteByPrimaryKey(reserveId));
     }
 
     public UniversalResponseBody updateReserve(Reserve reserve) {
@@ -119,5 +118,18 @@ public class ReserveServiceImpl implements ReserveService {
         return UniversalResponseBody.success(pageInfo);
     }
 
+    public UniversalResponseBody findReserveDetails(Integer reserveId, String otherThing, String shortMessage) {
+        return UniversalResponseBody.success(new ReserveInfo(reserveMapper.selectByPrimaryKey(reserveId), otherThing, shortMessage));
+    }
 
+    public boolean updateStatus(Integer reserveId,Integer status){
+        Reserve reserve = reserveMapper.selectByPrimaryKey(reserveId);
+        if (reserve == null){
+            log.error("reserveId查询结果为空！");
+            return false;
+        }else {
+            reserve.setReserveStatus(status);
+            return reserveMapper.updateByPrimaryKey(reserve)>0;
+        }
+    }
 }

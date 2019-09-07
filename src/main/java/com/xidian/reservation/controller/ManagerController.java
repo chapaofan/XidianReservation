@@ -115,5 +115,4 @@ public class ManagerController {
         return roomService.findAllRoom();
     }
 
-
 }

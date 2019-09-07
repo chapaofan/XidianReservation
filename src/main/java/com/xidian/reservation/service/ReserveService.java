@@ -21,4 +21,8 @@ public interface ReserveService {
 
     UniversalResponseBody selectNotAllowTime(int roomId, Date day) throws Exception;
 
+    UniversalResponseBody findReserveDetails(Integer reserveId, String otherThing, String shortMessage);
+
+    boolean updateStatus(Integer reserveId,Integer status);
+
 }

@@ -23,6 +23,7 @@
         from reserve
         where reserve_id = #{reserveId,jdbcType=INTEGER}
     </select>
+
     <select id="selectNotAllowTime" resultMap="BaseResultMap">
         SELECT reserve_id,
                consumer_id,
@@ -97,6 +98,7 @@
         ORDER BY
         reserve_id
     </select>
+
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete

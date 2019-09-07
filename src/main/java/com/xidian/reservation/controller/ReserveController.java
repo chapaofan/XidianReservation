@@ -8,6 +8,7 @@ import com.xidian.reservation.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
@@ -62,9 +63,9 @@ public class ReserveController {
 
     /**
      * @Description: 历史日程
-     * @Date:        9:29 2019/9/6
-     * @Param:       [httpServletRequest, pageNum, pageSize]
-     * @return:      com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
+     * @Date: 9:29 2019/9/6
+     * @Param: [httpServletRequest, pageNum, pageSize]
+     * @return: com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
      */
     @UserLoginToken
     @RequestMapping(value = "/history/{pageNum}/{pageSize}", method = RequestMethod.GET)
@@ -78,15 +79,15 @@ public class ReserveController {
 
     /**
      * @Description: 我的日程
-     * @Date:        11:09 2019/9/6
-     * @Param:       [httpServletRequest, pageNum, pageSize]
-     * @return:      com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
+     * @Date: 11:09 2019/9/6
+     * @Param: [httpServletRequest, pageNum, pageSize]
+     * @return: com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
      */
     @UserLoginToken
     @RequestMapping(value = "/myReserve/{pageNum}/{pageSize}", method = RequestMethod.GET)
     public UniversalResponseBody myReserve(HttpServletRequest httpServletRequest,
-                                                     @PathVariable("pageNum") int pageNum,
-                                                     @PathVariable("pageSize") int pageSize) {
+                                           @PathVariable("pageNum") int pageNum,
+                                           @PathVariable("pageSize") int pageSize) {
         String token = httpServletRequest.getHeader("token");
         Long consumerId = Long.parseLong(TokenUtil.getAppUID(token));
         return reserveService.findNotStartReserves(consumerId, pageNum, pageSize);
@@ -94,14 +95,89 @@ public class ReserveController {
 
     /**
      * @Description: 申请队列
-     * @Date:        11:34 2019/9/6
-     * @Param:       [pageNum, pageSize]
-     * @return:      com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
+     * @Date: 11:34 2019/9/6
+     * @Param: [pageNum, pageSize]
+     * @return: com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
      */
     @UserLoginToken
     @RequestMapping(value = "/apply/{pageNum}/{pageSize}", method = RequestMethod.GET)
     public UniversalResponseBody applyReserve(@PathVariable("pageNum") int pageNum,
-                                           @PathVariable("pageSize") int pageSize) {
+                                              @PathVariable("pageSize") int pageSize) {
         return reserveService.findNotStartAndStatus0(pageNum, pageSize);
+    }
+
+
+    /**
+     * @Description: 申请详情页
+     * @Date: 10:35 2019/9/7
+     * @Param: [reserveId]
+     * @return: com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
+     */
+    @UserLoginToken
+    @RequestMapping(value = "/apply/details/{reserveId}", method = RequestMethod.GET)
+    public UniversalResponseBody applyDetails(@PathVariable("reserveId") Integer reserveId) {
+        String otherThing = "用完后请打扫！";
+        String customerPassword = "131829";//TODO 获取密码操作
+        String shortMessage = "密码是：" + customerPassword;
+        return reserveService.findReserveDetails(reserveId, otherThing, shortMessage);
+    }
+
+
+    /**
+     * @Description: 管理员审核通过（启用）
+     * @Date: 10:43 2019/9/7
+     * @Param: [reserveId, otherThing, shortMessage]
+     * @return: com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
+     */
+    @UserLoginToken
+    @RequestMapping(value = "/apply/agree", method = RequestMethod.POST)
+    public UniversalResponseBody applyAgree(@NotNull @RequestParam("reserveId") Integer reserveId, @NotNull @RequestParam("otherThing") String otherThing,
+                                            @NotNull @RequestParam("shortMessage") String shortMessage, @NotNull @RequestParam("consumerId") Long consumerId,
+                                            @NotNull @RequestParam("wxCode") Long wxCode, @NotNull @RequestParam("formId") String formId) {
+        int status = 100;
+        String WxMSS = otherThing + " " + shortMessage;
+        //TODO 启用发送模板消息
+        //if (reserveService.updateStatus(reserveId,status) && 模板消息发送成功){
+        if (reserveService.updateStatus(reserveId, status)) {
+            return UniversalResponseBody.success();
+        } else {
+            return UniversalResponseBody.error("Template message sending failure or data update failure!");
+        }
+
+    }
+
+    /**
+     * @Description: 管理员审核不通过（取消）
+     * @Date: 10:58 2019/9/7
+     * @Param: [reserveId]
+     * @return: com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
+     */
+    @UserLoginToken
+    @RequestMapping(value = "/apply/disagree", method = RequestMethod.POST)
+    public UniversalResponseBody applyAgree(@RequestParam("reserveId") Integer reserveId, @NotNull @RequestParam("consumerId") Long consumerId,
+                                            @NotNull @RequestParam("wxCode") Long wxCode, @NotNull @RequestParam("formId") String formId) {
+        int status = 500;//100审核通过 500审核不通过 200取消会议
+        if (reserveService.updateStatus(reserveId, status)) {
+            return UniversalResponseBody.success();
+        } else {
+            return UniversalResponseBody.error("Data update failure!");
+        }
+    }
+
+    /**
+     * @Description: 取消申请
+     * @Date: 11:16 2019/9/7
+     * @Param: [reserveId]
+     * @return: com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
+     */
+    @UserLoginToken
+    @RequestMapping(value = "/apply/cancel/{reserveId}", method = RequestMethod.GET)
+    public UniversalResponseBody applyCancel(@PathVariable("reserveId") Integer reserveId) {
+        int status = 200;//100审核通过 500审核不通过 200取消会议
+        if (reserveService.updateStatus(reserveId, status)) {
+            return UniversalResponseBody.success();
+        } else {
+            return UniversalResponseBody.error("Data update failure!");
+        }
     }
 }
