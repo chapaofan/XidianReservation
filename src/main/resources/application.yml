@@ -16,7 +16,11 @@ spring:
   profiles:
     active: dev
 
-
+LOCK:
+  account: UN_01
+  password: un123456
+  hotelId: UN1567671322
+  host: https://lock.innjoysmart.me
 
 wx:
   appid: wx2709ce70a691dad4

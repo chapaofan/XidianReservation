@@ -5,7 +5,6 @@ import com.xidian.reservation.dao.WxInformationMapper;
 import com.xidian.reservation.dto.TemplateData;
 import com.xidian.reservation.dto.WxAccessToken;
 import com.xidian.reservation.dto.WxMssInfo;
-import com.xidian.reservation.dto.WxResponseInfo;
 import com.xidian.reservation.utils.WeChatUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

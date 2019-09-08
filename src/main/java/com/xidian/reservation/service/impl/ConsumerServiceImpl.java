@@ -47,12 +47,20 @@ public class ConsumerServiceImpl implements ConsumerService {
             return UniversalResponseBody.error("-3", "Please check if the name is correct！");
         } else {
             String openId = weChatUtil.getOpenId(code);
-            WxInformation wxInformation = new WxInformation(loginData.getConsumerId(),openId);
-            wxInformationMapper.insert(wxInformation);
-            String token = TokenUtil.getToken("" + consumer.getConsumerId());
-            //密码进行加密输出
-            consumer.setConsumerPassword(MD5Util.encrypt(consumer.getConsumerPassword()));
-            return UniversalResponseBody.success(new TokenInfo<>(consumer, token));
+            if (openId == null) {
+                return UniversalResponseBody.error("-4","Code expired");
+            } else {
+                WxInformation wxInformation = wxInformationMapper.selectByPrimaryKey(loginData.getConsumerId());
+                if (wxInformation == null) {
+                    WxInformation wxInformation2 = new WxInformation(loginData.getConsumerId(), openId);
+                    wxInformationMapper.insert(wxInformation2);
+                }
+                    String token = TokenUtil.getToken("" + consumer.getConsumerId());
+                    //密码进行加密输出
+                    consumer.setConsumerPassword(MD5Util.encrypt(consumer.getConsumerPassword()));
+                    return UniversalResponseBody.success(new TokenInfo<>(consumer, token));
+
+            }
         }
     }
 

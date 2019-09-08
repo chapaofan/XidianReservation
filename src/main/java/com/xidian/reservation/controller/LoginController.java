@@ -3,11 +3,9 @@ package com.xidian.reservation.controller;
 
 import com.xidian.reservation.entity.Consumer;
 import com.xidian.reservation.entity.Manager;
-import com.xidian.reservation.entity.WxInformation;
 import com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody;
 import com.xidian.reservation.service.ConsumerService;
 import com.xidian.reservation.service.ManagerService;
-import com.xidian.reservation.service.WxInformationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;

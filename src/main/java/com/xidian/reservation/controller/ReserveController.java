@@ -7,11 +7,11 @@ import com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody;
 import com.xidian.reservation.service.ReserveService;
 import com.xidian.reservation.service.WxPushService;
 import com.xidian.reservation.utils.EmojiCharacterUtil;
+import com.xidian.reservation.service.LockService;
 import com.xidian.reservation.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
@@ -35,6 +35,9 @@ public class ReserveController {
 
     @Resource
     private WxPushService wxPushService;
+
+    @Resource
+    private LockService lockService;
 
 
     /**
@@ -125,9 +128,9 @@ public class ReserveController {
      */
     @ManagerLoginToken
     @RequestMapping(value = "/apply/details/{reserveId}", method = RequestMethod.GET)
-    public UniversalResponseBody applyDetails(@PathVariable("reserveId") Integer reserveId) {
+    public UniversalResponseBody applyDetails(@PathVariable("reserveId") Integer reserveId) throws Exception{
         String otherThing = "用完后请打扫！";
-        String customerPassword = "131829";//TODO 获取密码操作
+        String customerPassword = lockService.getPassword(reserveId);
         String shortMessage = "密码是：" + customerPassword;
         return reserveService.findReserveDetails(reserveId, otherThing, shortMessage);
     }

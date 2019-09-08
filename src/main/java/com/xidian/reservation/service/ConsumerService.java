@@ -1,7 +1,6 @@
 package com.xidian.reservation.service;
 
 import com.xidian.reservation.entity.Consumer;
-import com.xidian.reservation.entity.WxInformation;
 import com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody;
 
 public interface ConsumerService {
