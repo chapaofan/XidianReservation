@@ -3,8 +3,10 @@ package com.xidian.reservation.controller;
 import com.xidian.reservation.annotation.ManagerLoginToken;
 import com.xidian.reservation.annotation.UserLoginToken;
 import com.xidian.reservation.entity.Reserve;
+import com.xidian.reservation.entity.WxInformation;
 import com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody;
 import com.xidian.reservation.service.ReserveService;
+import com.xidian.reservation.service.WxInformationService;
 import com.xidian.reservation.service.WxPushService;
 import com.xidian.reservation.utils.EmojiCharacterUtil;
 import com.xidian.reservation.service.LockService;
@@ -12,6 +14,7 @@ import com.xidian.reservation.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
@@ -39,6 +42,9 @@ public class ReserveController {
     @Resource
     private LockService lockService;
 
+    @Resource
+    private WxInformationService wxInformationService;
+
 
     /**
      * @Description: 已被预约时间段
@@ -61,7 +67,7 @@ public class ReserveController {
      */
     @UserLoginToken
     @RequestMapping(value = "/order", method = RequestMethod.POST)
-    public UniversalResponseBody order(HttpServletRequest httpServletRequest, @NotNull Reserve reserve) {
+    public UniversalResponseBody order(HttpServletRequest httpServletRequest, @NotNull Reserve reserve, @NotNull @RequestParam("formId") String formId, @NotNull @RequestParam("code") String code) throws Exception {
         String token = httpServletRequest.getHeader("token");
         Long consumerId = Long.parseLong(TokenUtil.getAppUID(token));
 
@@ -70,7 +76,7 @@ public class ReserveController {
         reserve.setConsumerId(consumerId);
         reserve.setReserveStatus(0);
         //log.info(""+consumerId);
-        return reserveService.saveReserve(reserve);
+        return reserveService.reserveRoom(reserve, formId, code);
     }
 
 
@@ -128,7 +134,7 @@ public class ReserveController {
      */
     @ManagerLoginToken
     @RequestMapping(value = "/apply/details/{reserveId}", method = RequestMethod.GET)
-    public UniversalResponseBody applyDetails(@PathVariable("reserveId") Integer reserveId) throws Exception{
+    public UniversalResponseBody applyDetails(@PathVariable("reserveId") Integer reserveId) throws Exception {
         String otherThing = "用完后请打扫！";
         String customerPassword = lockService.getPassword(reserveId);
         String shortMessage = "密码是：" + customerPassword;
@@ -145,13 +151,13 @@ public class ReserveController {
     @ManagerLoginToken
     @RequestMapping(value = "/apply/agree", method = RequestMethod.POST)
     public UniversalResponseBody applyAgree(@NotNull @RequestParam("reserveId") Integer reserveId, @NotNull @RequestParam("otherThing") String otherThing,
-                                            @NotNull @RequestParam("shortMessage") String shortMessage, @NotNull @RequestParam("consumerId") Long consumerId,
-                                            @NotNull @RequestParam("formId") String formId) throws Exception {
+                                            @NotNull @RequestParam("shortMessage") String shortMessage) throws Exception {
 
         //reserveStatus:100审核通过 500审核不通过 200取消会议
         String WxMSS = otherThing + " " + shortMessage;
         Reserve reserve = reserveService.findReserveByReserveId(reserveId);
-        if (reserve == null) {
+        WxInformation wxInformation = wxInformationService.findByConsumerId(reserveId);
+        if (reserve == null || wxInformation == null) {
             return UniversalResponseBody.error("Query data is empty!");
         } else {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -161,7 +167,7 @@ public class ReserveController {
             String endTime = formatter2.format(reserve.getReserveEnd());
             String reserveDateTime = reserveDate + " " + startTime + "--" + endTime;
 
-            String result = wxPushService.wxPushOneUser(reserve.getConsumerId(), formId, reserve.getRoomName(), reserve.getReserveName(), "审核通过",
+            String result = wxPushService.wxPushOneUser(reserve.getReserveId(), wxInformation.getFormId(), reserve.getRoomName(), reserve.getReserveName(), "审核通过",
                     reserveDateTime, WxMSS);
             reserve.setReserveStatus(100);
             if (reserveService.updateReserve(reserve)) {
@@ -181,12 +187,12 @@ public class ReserveController {
      */
     @ManagerLoginToken
     @RequestMapping(value = "/apply/disagree", method = RequestMethod.POST)
-    public UniversalResponseBody applyAgree(@RequestParam("reserveId") Integer reserveId, @NotNull @RequestParam("consumerId") Long consumerId,
-                                            @NotNull @RequestParam("formId") String formId) throws Exception {
+    public UniversalResponseBody applyAgree(@RequestParam("reserveId") Integer reserveId) throws Exception {
         //reserveStatus:100审核通过 500审核不通过 200取消会议
 
         Reserve reserve = reserveService.findReserveByReserveId(reserveId);
-        if (reserve == null) {
+        WxInformation wxInformation = wxInformationService.findByConsumerId(reserveId);
+        if (reserve == null || wxInformation == null) {
             return UniversalResponseBody.error("Query data is empty!");
         } else {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -195,7 +201,7 @@ public class ReserveController {
             String startTime = formatter2.format(reserve.getReserveStart());
             String endTime = formatter2.format(reserve.getReserveEnd());
             String reserveDateTime = reserveDate + " " + startTime + "--" + endTime;
-            String result = wxPushService.wxPushOneUser(reserve.getConsumerId(), formId, reserve.getRoomName(), reserve.getReserveName(), "审核不通过",
+            String result = wxPushService.wxPushOneUser(reserve.getReserveId(), wxInformation.getFormId(), reserve.getRoomName(), reserve.getReserveName(), "审核不通过",
                     reserveDateTime, "审核不通过，有问题请联系管理员");
             reserve.setReserveStatus(500);
             if (reserveService.updateReserve(reserve)) {

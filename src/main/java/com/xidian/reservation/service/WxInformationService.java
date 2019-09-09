@@ -13,5 +13,5 @@ public interface WxInformationService {
 
     boolean saveWxInformation(WxInformation wxInformation);
 
-    WxInformation findByConsumerId(Long consumerId);
+    WxInformation findByConsumerId(Integer reserveId);
 }

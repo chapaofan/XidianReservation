@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface ReserveMapper {
+
     int deleteByPrimaryKey(Integer reserveId);
 
     int insert(Reserve record);

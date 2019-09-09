@@ -5,7 +5,7 @@ import com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody;
 
 public interface ConsumerService {
 
-    UniversalResponseBody consumerLogin(Consumer loginData,String code) throws Exception;
+    UniversalResponseBody consumerLogin(Consumer loginData) throws Exception;
 
     UniversalResponseBody saveConsumer(Consumer consumer);
 

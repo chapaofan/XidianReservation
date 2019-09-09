@@ -105,7 +105,7 @@
         from reserve
         where reserve_id = #{reserveId,jdbcType=INTEGER}
     </delete>
-    <insert id="insert" parameterType="com.xidian.reservation.entity.Reserve">
+    <insert id="insert" parameterType="com.xidian.reservation.entity.Reserve" useGeneratedKeys="true" keyProperty="reserveId">
         insert into reserve (reserve_id, consumer_id, reserve_name,
                              room_name, reserve_tel, reserve_date,
                              reserve_start, reserve_end, reserve_purpose,

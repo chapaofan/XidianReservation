@@ -48,8 +48,8 @@ public class LoginController {
      * @return:      com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
      */
     @RequestMapping(value = "/consumer", method = RequestMethod.POST)
-    public UniversalResponseBody ConsumerLogin(@NotNull Consumer loginData,@RequestParam("code") String code) throws Exception {
-        return consumerService.consumerLogin(loginData,code);
+    public UniversalResponseBody ConsumerLogin(@NotNull Consumer loginData) throws Exception {
+        return consumerService.consumerLogin(loginData);
     }
 
 

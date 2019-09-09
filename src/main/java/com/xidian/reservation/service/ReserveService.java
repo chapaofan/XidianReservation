@@ -6,7 +6,7 @@ import java.util.Date;
 
 public interface ReserveService {
 
-    UniversalResponseBody saveReserve(Reserve reserve);
+    UniversalResponseBody reserveRoom(Reserve reserve,String formId, String code) throws Exception;
 
     UniversalResponseBody deleteReserve(Integer reserveId);
 

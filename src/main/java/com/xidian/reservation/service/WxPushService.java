@@ -47,10 +47,10 @@ public class WxPushService {
     /**
      * 微信小程序推送单个用户
      */
-    public String wxPushOneUser(Long consumerId, String formId, String roomName, String reserveName, String reserveResult, String reserveDatetime, String remarks) throws Exception {
+    public String wxPushOneUser(Integer reserveId, String formId, String roomName, String reserveName, String reserveResult, String reserveDatetime, String remarks) throws Exception {
 
 
-        String openid = wxInformationMapper.selectByPrimaryKey(consumerId).getOpenId();
+        String openid = wxInformationMapper.selectByPrimaryKey(reserveId).getOpenId();
 
         //获取access_token
         String access_token = getAccess_token(APPID, APPSECRET);

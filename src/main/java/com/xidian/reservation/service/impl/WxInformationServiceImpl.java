@@ -26,7 +26,7 @@ public class WxInformationServiceImpl implements WxInformationService {
         return wxInformationMapper.insert(wxInformation)>0;
     }
 
-    public WxInformation findByConsumerId(Long consumerId){
-        return wxInformationMapper.selectByPrimaryKey(consumerId);
+    public WxInformation findByConsumerId(Integer reserveId){
+        return wxInformationMapper.selectByPrimaryKey(reserveId);
     }
 }
