@@ -5,16 +5,12 @@ import com.xidian.reservation.annotation.UserLoginToken;
 import com.xidian.reservation.entity.Reserve;
 import com.xidian.reservation.entity.WxInformation;
 import com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody;
-import com.xidian.reservation.service.ReserveService;
-import com.xidian.reservation.service.WxInformationService;
-import com.xidian.reservation.service.WxPushService;
+import com.xidian.reservation.service.*;
 import com.xidian.reservation.utils.EmojiCharacterUtil;
-import com.xidian.reservation.service.LockService;
 import com.xidian.reservation.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
@@ -45,6 +41,8 @@ public class ReserveController {
     @Resource
     private WxInformationService wxInformationService;
 
+    @Resource
+    private RoomService roomService;
 
     /**
      * @Description: 已被预约时间段
@@ -227,5 +225,18 @@ public class ReserveController {
         } else {
             return UniversalResponseBody.error("Data update failure!");
         }
+    }
+
+
+    /**
+     * @Description: 查看所有教室
+     * @Date:        22:36 2019/9/5
+     * @Param:       []
+     * @return:      com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
+     */
+    @UserLoginToken
+    @RequestMapping(value = "/view/room/all", method = RequestMethod.GET)
+    public UniversalResponseBody viewAllRoom(){
+        return roomService.findAllRoom();
     }
 }

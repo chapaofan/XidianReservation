@@ -1,7 +1,6 @@
 package com.xidian.reservation.controller;
 
 import com.xidian.reservation.annotation.ManagerLoginToken;
-import com.xidian.reservation.annotation.UserLoginToken;
 import com.xidian.reservation.entity.Consumer;
 import com.xidian.reservation.entity.Room;
 import com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody;
@@ -9,7 +8,6 @@ import com.xidian.reservation.service.ConsumerService;
 import com.xidian.reservation.service.RoomService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 
@@ -102,18 +100,6 @@ public class ManagerController {
     @RequestMapping(value = "/view/room/{pageNum}/{pageSize}", method = RequestMethod.GET)
     public UniversalResponseBody viewRoomsByPage(@PathVariable("pageNum") int pageNum,@PathVariable("pageSize") int pageSize){
         return roomService.findRoomByPage(pageNum,pageSize);
-    }
-
-    /**
-     * @Description: 查看所有教室
-     * @Date:        22:36 2019/9/5
-     * @Param:       []
-     * @return:      com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
-     */
-    @ManagerLoginToken
-    @RequestMapping(value = "/view/room/all", method = RequestMethod.GET)
-    public UniversalResponseBody viewAllRoom(){
-        return roomService.findAllRoom();
     }
 
 }
