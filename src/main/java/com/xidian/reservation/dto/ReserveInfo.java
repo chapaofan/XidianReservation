@@ -19,8 +19,8 @@ public class ReserveInfo extends Reserve {
     private String shortMessage;
 
     public ReserveInfo(Integer reserveId, Long consumerId, String reserveName, String roomName, Long reserveTel, Date reserveDate,
-                       Date reserveStart, Date reserveEnd, String reservePurpose, Integer reserveStatus, String otherThing, String shortMessage) {
-        super(reserveId, consumerId, reserveName, roomName, reserveTel, reserveDate, reserveStart, reserveEnd, reservePurpose, reserveStatus);
+                       Date reserveStart, Date reserveEnd, String reservePurpose, Integer reserveStatus, String otherThing, String shortMessage,String openPwd) {
+        super(reserveId, consumerId, reserveName, roomName, reserveTel, reserveDate, reserveStart, reserveEnd, reservePurpose, reserveStatus,openPwd);
         this.otherThing = otherThing;
         this.shortMessage = shortMessage;
     }
@@ -30,7 +30,7 @@ public class ReserveInfo extends Reserve {
 
     public ReserveInfo(Reserve reserve, String otherThing, String shortMessage) {
         super(reserve.getReserveId(),reserve.getConsumerId(),reserve.getReserveName(),reserve.getRoomName(),reserve.getReserveTel(),
-                reserve.getReserveDate(),reserve.getReserveStart(),reserve.getReserveEnd(),reserve.getReservePurpose(),reserve.getReserveStatus());
+                reserve.getReserveDate(),reserve.getReserveStart(),reserve.getReserveEnd(),reserve.getReservePurpose(),reserve.getReserveStatus(),reserve.getOpenPwd());
         this.otherThing = otherThing;
         this.shortMessage = shortMessage;
     }

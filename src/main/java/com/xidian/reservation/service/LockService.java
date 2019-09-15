@@ -75,11 +75,13 @@ public class LockService {
     }
 
 
-    public String getPassword(Integer reserveId) throws Exception {
+    public String getPassword(Reserve reserve) throws Exception {
         HttpHeaders headers = new HttpHeaders();
         //定义请求参数类型，这里用json所以是MediaType.APPLICATION_JSON
         headers.setContentType(MediaType.APPLICATION_JSON);
-        Reserve reserve = reserveMapper.selectByPrimaryKey(reserveId);
+        //Reserve reserve = reserveMapper.selectByPrimaryKey(reserveId);
+
+
         Integer roomId = roomMapper.selectByName(reserve.getRoomName()).getRoomId();
         Date reserveDate = reserve.getReserveDate();
         Date startTime = reserve.getReserveStart();
@@ -118,7 +120,7 @@ public class LockService {
         LockResponseBodySovler responseBodySovler = JSON.parseObject(responseEntity.getBody(), LockResponseBodySovler.class);
         Map<String, String> res = responseBodySovler.getData();
 
-        log.info(res.get("customerPassword"));
+        //log.info(res.get("customerPassword"));
         return res.get("customerPassword");
     }
 

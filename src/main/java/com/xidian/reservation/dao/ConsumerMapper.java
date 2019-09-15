@@ -3,7 +3,6 @@ package com.xidian.reservation.dao;
 import com.github.pagehelper.Page;
 import com.xidian.reservation.entity.Consumer;
 
-import java.util.List;
 
 public interface ConsumerMapper {
     int deleteByPrimaryKey(Long consumerId);

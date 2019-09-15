@@ -1,6 +1,6 @@
 package com.xidian.reservation.dao;
 
-import com.xidian.reservation.entity.Manager;
+        import com.xidian.reservation.entity.Manager;
 
 public interface ManagerMapper {
 

@@ -49,7 +49,7 @@ public class ReserveServiceImpl implements ReserveService {
     private WeChatUtil weChatUtil;
 
     @Transactional
-    public UniversalResponseBody reserveRoom(Reserve reserve,String formId, String code) throws Exception {
+    public UniversalResponseBody reserveRoom(Reserve reserve, String formId, String code) throws Exception {
         Date start = reserve.getReserveStart();
         Date end = reserve.getReserveEnd();
         Room room = roomMapper.selectByName(reserve.getRoomName());
@@ -79,7 +79,7 @@ public class ReserveServiceImpl implements ReserveService {
                 String openId = weChatUtil.getOpenId(code);
                 if (openId != null) {
                     reserveMapper.insert(reserve);
-                    WxInformation wxInformation = new WxInformation(reserve.getReserveId(), reserve.getConsumerId(), openId,formId);
+                    WxInformation wxInformation = new WxInformation(reserve.getReserveId(), reserve.getConsumerId(), openId, formId);
                     wxInformationMapper.insert(wxInformation);
                     return UniversalResponseBody.success();
                 } else {
@@ -96,11 +96,23 @@ public class ReserveServiceImpl implements ReserveService {
         Set<Integer> res = new HashSet<>();
         List<Reserve> sqlRes = reserveMapper.selectNotAllowTime(roomId, reserveDate);
         for (Reserve reserve : sqlRes) {
-            SimpleDateFormat formatter = new SimpleDateFormat("HH");
-            int start = Integer.parseInt(formatter.format(reserve.getReserveStart()));
-            int end = Integer.parseInt(formatter.format(reserve.getReserveEnd()));
-            for (int i = start; i <= end; i++) {
-                res.add(i);
+            SimpleDateFormat hourFormatter = new SimpleDateFormat("HH");
+            SimpleDateFormat minuteFormatter = new SimpleDateFormat("mm");
+
+            int startHour = (Integer.parseInt(hourFormatter.format(reserve.getReserveStart())) - 8) * 2;
+            int startMinute = Integer.parseInt(minuteFormatter.format(reserve.getReserveStart()));
+            int endHour = (Integer.parseInt(hourFormatter.format(reserve.getReserveEnd())) - 8) * 2;
+            int endMinute = Integer.parseInt(minuteFormatter.format(reserve.getReserveEnd()));
+            if (startMinute - 30 > 0) {
+                startHour = startHour + 1;
+            }
+            if (endMinute - 30 > 0) {
+                endHour = endHour + 1;
+            }
+            for (int i = startHour; i <= endHour; i++) {
+                if (i >= 0) {
+                    res.add(i);
+                }
             }
         }
         return UniversalResponseBody.success(res);
@@ -134,7 +146,8 @@ public class ReserveServiceImpl implements ReserveService {
     }
 
     public UniversalResponseBody findReserveDetails(Integer reserveId, String otherThing, String shortMessage) {
-        return UniversalResponseBody.success(new ReserveInfo(reserveMapper.selectByPrimaryKey(reserveId), otherThing, shortMessage));
+        Reserve reserve = reserveMapper.selectByPrimaryKey(reserveId);
+        return UniversalResponseBody.success(new ReserveInfo(reserve, otherThing, shortMessage+reserve.getOpenPwd()));
     }
 
     public boolean updateStatus(Integer reserveId, Integer status) {

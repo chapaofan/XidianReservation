@@ -73,7 +73,7 @@ public class ReserveController {
         reserve.setReservePurpose(EmojiCharacterUtil.filter(reserve.getReservePurpose()));
         reserve.setConsumerId(consumerId);
         reserve.setReserveStatus(0);
-        //log.info(""+consumerId);
+        reserve.setOpenPwd(lockService.getPassword(reserve));
         return reserveService.reserveRoom(reserve, formId, code);
     }
 
@@ -134,8 +134,8 @@ public class ReserveController {
     @RequestMapping(value = "/apply/details/{reserveId}", method = RequestMethod.GET)
     public UniversalResponseBody applyDetails(@PathVariable("reserveId") Integer reserveId) throws Exception {
         String otherThing = "用完后请打扫！";
-        String customerPassword = lockService.getPassword(reserveId);
-        String shortMessage = "密码是：" + customerPassword;
+        //String customerPassword = lockService.getPassword(reserveId);
+        String shortMessage = "密码是：" ;
         return reserveService.findReserveDetails(reserveId, otherThing, shortMessage);
     }
 

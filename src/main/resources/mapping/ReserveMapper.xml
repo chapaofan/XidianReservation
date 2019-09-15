@@ -12,10 +12,11 @@
         <result column="reserve_end" property="reserveEnd" jdbcType="TIME"/>
         <result column="reserve_purpose" property="reservePurpose" jdbcType="VARCHAR"/>
         <result column="reserve_status" property="reserveStatus" jdbcType="INTEGER"/>
+        <result column="open_pwd" property="openPwd" jdbcType="VARCHAR"/>
     </resultMap>
     <sql id="Base_Column_List">
         reserve_id, consumer_id, reserve_name, room_name, reserve_tel, reserve_date, reserve_start,
-    reserve_end, reserve_purpose, reserve_status
+    reserve_end, reserve_purpose, reserve_status,open_pwd
     </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
@@ -34,7 +35,8 @@
                reserve_start,
                reserve_end,
                reserve_purpose,
-               reserve_status
+               reserve_status,
+               open_pwd
         FROM reserve,
              room
         WHERE reserve.reserve_date = DATE_FORMAT(#{reserveDate,jdbcType=DATE}, '%Y-%m-%d')
@@ -109,11 +111,11 @@
         insert into reserve (reserve_id, consumer_id, reserve_name,
                              room_name, reserve_tel, reserve_date,
                              reserve_start, reserve_end, reserve_purpose,
-                             reserve_status)
+                             reserve_status,open_pwd)
         values (#{reserveId,jdbcType=INTEGER}, #{consumerId,jdbcType=BIGINT}, #{reserveName,jdbcType=VARCHAR},
                 #{roomName,jdbcType=VARCHAR}, #{reserveTel,jdbcType=BIGINT}, #{reserveDate,jdbcType=DATE},
                 #{reserveStart,jdbcType=TIME}, #{reserveEnd,jdbcType=TIME}, #{reservePurpose,jdbcType=VARCHAR},
-                #{reserveStatus,jdbcType=INTEGER})
+                #{reserveStatus,jdbcType=INTEGER},#{openPwd,jdbcType=VARCHAR})
     </insert>
     <insert id="insertSelective" parameterType="com.xidian.reservation.entity.Reserve">
         insert into reserve
@@ -148,6 +150,9 @@
             <if test="reserveStatus != null">
                 reserve_status,
             </if>
+            <if test="reserveStatus != null">
+                open_pwd,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="reserveId != null">
@@ -180,6 +185,10 @@
             <if test="reserveStatus != null">
                 #{reserveStatus,jdbcType=INTEGER},
             </if>
+            <if test="openPwd != null">
+                #{openPwd,jdbcType=VARCHAR},
+            </if>
+
         </trim>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.xidian.reservation.entity.Reserve">
@@ -212,6 +221,10 @@
             <if test="reserveStatus != null">
                 reserve_status = #{reserveStatus,jdbcType=INTEGER},
             </if>
+            <if test="openPwd != null">
+                open_pwd = #{openPwd,jdbcType=VARCHAR},
+            </if>
+
         </set>
         where reserve_id = #{reserveId,jdbcType=INTEGER}
     </update>
@@ -225,7 +238,8 @@
             reserve_start   = #{reserveStart,jdbcType=TIME},
             reserve_end     = #{reserveEnd,jdbcType=TIME},
             reserve_purpose = #{reservePurpose,jdbcType=VARCHAR},
-            reserve_status  = #{reserveStatus,jdbcType=INTEGER}
+            reserve_status  = #{reserveStatus,jdbcType=INTEGER},
+            open_pwd = #{openPwd,jdbcType=VARCHAR}
         where reserve_id = #{reserveId,jdbcType=INTEGER}
     </update>
 </mapper>

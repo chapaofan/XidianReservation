@@ -34,7 +34,10 @@ public class Reserve {
     //0 初始状态  100 通过审核  500未通过审核
     private Integer reserveStatus;
 
-    public Reserve(Integer reserveId, Long consumerId, String reserveName, String roomName, Long reserveTel, Date reserveDate, Date reserveStart, Date reserveEnd, String reservePurpose, Integer reserveStatus) {
+    private String openPwd;
+
+    public Reserve(Integer reserveId, Long consumerId, String reserveName, String roomName, Long reserveTel, Date reserveDate,
+                   Date reserveStart, Date reserveEnd, String reservePurpose, Integer reserveStatus, String openPwd) {
         this.reserveId = reserveId;
         this.consumerId = consumerId;
         this.reserveName = reserveName;
@@ -45,6 +48,7 @@ public class Reserve {
         this.reserveEnd = reserveEnd;
         this.reservePurpose = reservePurpose;
         this.reserveStatus = reserveStatus;
+        this.openPwd = openPwd;
     }
 
     public Reserve() {
