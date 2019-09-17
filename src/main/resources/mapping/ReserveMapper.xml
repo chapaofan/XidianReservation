@@ -150,7 +150,7 @@
             <if test="reserveStatus != null">
                 reserve_status,
             </if>
-            <if test="reserveStatus != null">
+            <if test="openPwd != null">
                 open_pwd,
             </if>
         </trim>

@@ -10,7 +10,7 @@ public interface ReserveService {
 
     UniversalResponseBody deleteReserve(Integer reserveId);
 
-    boolean updateReserve(Reserve reserve);
+    UniversalResponseBody updateReserve(Reserve reserve);
 
     UniversalResponseBody findHistoryReserves(Long consumerId, int pageNum, int pageSize);
 

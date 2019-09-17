@@ -11,6 +11,7 @@ import com.xidian.reservation.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
@@ -135,7 +136,7 @@ public class ReserveController {
     public UniversalResponseBody applyDetails(@PathVariable("reserveId") Integer reserveId) throws Exception {
         String otherThing = "用完后请打扫！";
         //String customerPassword = lockService.getPassword(reserveId);
-        String shortMessage = "密码是：" ;
+        String shortMessage = "密码是：";
         return reserveService.findReserveDetails(reserveId, otherThing, shortMessage);
     }
 
@@ -148,16 +149,24 @@ public class ReserveController {
      */
     @ManagerLoginToken
     @RequestMapping(value = "/apply/agree", method = RequestMethod.POST)
-    public UniversalResponseBody applyAgree(@NotNull @RequestParam("reserveId") Integer reserveId, @NotNull @RequestParam("otherThing") String otherThing,
+    public UniversalResponseBody applyAgree(@NotNull Reserve reserveData,
+                                            @NotNull @RequestParam("otherThing") String otherThing,
                                             @NotNull @RequestParam("shortMessage") String shortMessage) throws Exception {
 
         //reserveStatus:100审核通过 500审核不通过 200取消会议
         String WxMSS = otherThing + " " + shortMessage;
-        Reserve reserve = reserveService.findReserveByReserveId(reserveId);
-        WxInformation wxInformation = wxInformationService.findByConsumerId(reserveId);
+        Reserve reserve = reserveService.findReserveByReserveId(reserveData.getReserveId());
+
+
+        WxInformation wxInformation = wxInformationService.findByConsumerId(reserveData.getReserveId());
         if (reserve == null || wxInformation == null) {
             return UniversalResponseBody.error("Query data is empty!");
         } else {
+            //管理员更改教室和时间
+            reserve.setRoomName(reserveData.getRoomName());
+            reserve.setReserveStart(reserveData.getReserveStart());
+            reserve.setReserveEnd(reserveData.getReserveEnd());
+
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             String reserveDate = formatter.format(reserve.getReserveDate());
             SimpleDateFormat formatter2 = new SimpleDateFormat("HH:mm:ss");
@@ -167,12 +176,9 @@ public class ReserveController {
 
             String result = wxPushService.wxPushOneUser(reserve.getReserveId(), wxInformation.getFormId(), reserve.getRoomName(), reserve.getReserveName(), "审核通过",
                     reserveDateTime, WxMSS);
+
             reserve.setReserveStatus(100);
-            if (reserveService.updateReserve(reserve)) {
-                return UniversalResponseBody.success();
-            } else {
-                return UniversalResponseBody.error("Data update failure!");
-            }
+            return reserveService.updateReserve(reserve);
         }
 
     }
@@ -202,11 +208,7 @@ public class ReserveController {
             String result = wxPushService.wxPushOneUser(reserve.getReserveId(), wxInformation.getFormId(), reserve.getRoomName(), reserve.getReserveName(), "审核不通过",
                     reserveDateTime, "审核不通过，有问题请联系管理员");
             reserve.setReserveStatus(500);
-            if (reserveService.updateReserve(reserve)) {
-                return UniversalResponseBody.success();
-            } else {
-                return UniversalResponseBody.error("Data update failure!");
-            }
+            return reserveService.updateReserve(reserve);
         }
     }
 
@@ -230,13 +232,13 @@ public class ReserveController {
 
     /**
      * @Description: 查看所有教室
-     * @Date:        22:36 2019/9/5
-     * @Param:       []
-     * @return:      com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
+     * @Date: 22:36 2019/9/5
+     * @Param: []
+     * @return: com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
      */
     @UserLoginToken
     @RequestMapping(value = "/view/room/all", method = RequestMethod.GET)
-    public UniversalResponseBody viewAllRoom(){
+    public UniversalResponseBody viewAllRoom() {
         return roomService.findAllRoom();
     }
 }

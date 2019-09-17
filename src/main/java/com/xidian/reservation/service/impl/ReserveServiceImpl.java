@@ -123,8 +123,43 @@ public class ReserveServiceImpl implements ReserveService {
         return UniversalResponseBody.success(reserveMapper.deleteByPrimaryKey(reserveId));
     }
 
-    public boolean updateReserve(Reserve reserve) {
-        return reserveMapper.updateByPrimaryKey(reserve) > 0;
+    @Transactional
+    public UniversalResponseBody updateReserve(Reserve reserve) {
+        Date start = reserve.getReserveStart();
+        Date end = reserve.getReserveEnd();
+        Room room = roomMapper.selectByName(reserve.getRoomName());
+        if (room == null) {
+            log.error("无此教室，更新失败！");
+            return UniversalResponseBody.error(CommonEnum.NOT_FOUND);
+        } else {
+            if (String2DateUtils.compTime(start, end)) {
+                log.error("结束时间在开始时间之前！");
+                return UniversalResponseBody.error(CommonEnum.BODY_NOT_MATCH);
+            }
+            List<Reserve> res = reserveMapper.selectNotAllowTime(room.getRoomId(), reserve.getReserveDate());
+            boolean flag = true;
+            for (Reserve result : res) {
+                if (result.getReserveStatus() == 200 || result.getReserveStatus() == 500) {
+                    continue;
+                }
+                Date startR = result.getReserveStart();
+                Date endR = result.getReserveEnd();
+
+                if (!(String2DateUtils.compTime(startR, end) || String2DateUtils.compTime(start, endR))) {
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag && reserveMapper.updateByPrimaryKey(reserve) > 0) {
+                return UniversalResponseBody.success();
+            } else {
+                return UniversalResponseBody.error("701", "Time occupy!");
+            }
+        }
+
+
+
+
     }
 
     public UniversalResponseBody findHistoryReserves(Long consumerId, int pageNum, int pageSize) {
