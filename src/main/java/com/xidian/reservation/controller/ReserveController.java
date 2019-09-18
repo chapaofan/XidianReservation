@@ -11,7 +11,6 @@ import com.xidian.reservation.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
@@ -162,6 +161,10 @@ public class ReserveController {
         if (reserve == null || wxInformation == null) {
             return UniversalResponseBody.error("Query data is empty!");
         } else {
+            //判断时间是否一致//TODO 时间不修改无法启用，微信通知改在验证之后，不然用不了了
+            //if ()
+
+
             //管理员更改教室和时间
             reserve.setRoomName(reserveData.getRoomName());
             reserve.setReserveStart(reserveData.getReserveStart());
@@ -174,11 +177,10 @@ public class ReserveController {
             String endTime = formatter2.format(reserve.getReserveEnd());
             String reserveDateTime = reserveDate + " " + startTime + "--" + endTime;
 
-            String result = wxPushService.wxPushOneUser(reserve.getReserveId(), wxInformation.getFormId(), reserve.getRoomName(), reserve.getReserveName(), "审核通过",
-                    reserveDateTime, WxMSS);
+
 
             reserve.setReserveStatus(100);
-            return reserveService.updateReserve(reserve);
+            return reserveService.changeReserve(reserve,wxInformation.getFormId(),reserveDateTime,"审核通过",WxMSS);
         }
 
     }
@@ -205,10 +207,11 @@ public class ReserveController {
             String startTime = formatter2.format(reserve.getReserveStart());
             String endTime = formatter2.format(reserve.getReserveEnd());
             String reserveDateTime = reserveDate + " " + startTime + "--" + endTime;
-            String result = wxPushService.wxPushOneUser(reserve.getReserveId(), wxInformation.getFormId(), reserve.getRoomName(), reserve.getReserveName(), "审核不通过",
-                    reserveDateTime, "审核不通过，有问题请联系管理员");
+
+            /*String result = wxPushService.wxPushOneUser(reserve.getReserveId(), wxInformation.getFormId(), reserve.getRoomName(), reserve.getReserveName(), "审核不通过",
+                    reserveDateTime, "审核不通过，有问题请联系管理员");*/
             reserve.setReserveStatus(500);
-            return reserveService.updateReserve(reserve);
+            return reserveService.changeReserve(reserve,wxInformation.getFormId(),reserveDateTime,"审核不通过","审核不通过，有问题请联系管理员重新申请");
         }
     }
 

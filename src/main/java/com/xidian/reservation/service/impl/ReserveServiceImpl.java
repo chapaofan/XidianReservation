@@ -12,6 +12,7 @@ import com.xidian.reservation.entity.WxInformation;
 import com.xidian.reservation.exceptionHandler.CommonEnum;
 import com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody;
 import com.xidian.reservation.service.ReserveService;
+import com.xidian.reservation.service.WxPushService;
 import com.xidian.reservation.utils.String2DateUtils;
 import com.xidian.reservation.utils.WeChatUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +49,10 @@ public class ReserveServiceImpl implements ReserveService {
     @Resource
     private WeChatUtil weChatUtil;
 
+    @Resource
+    private WxPushService wxPushService;
+
+
     @Transactional
     public UniversalResponseBody reserveRoom(Reserve reserve, String formId, String code) throws Exception {
         Date start = reserve.getReserveStart();
@@ -61,7 +66,7 @@ public class ReserveServiceImpl implements ReserveService {
                 log.error("结束时间在开始时间之前！");
                 return UniversalResponseBody.error(CommonEnum.BODY_NOT_MATCH);
             }
-            List<Reserve> res = reserveMapper.selectNotAllowTime(room.getRoomId(), reserve.getReserveDate());
+            List<Reserve> res = reserveMapper.selectNotAllowTime(room.getRoomId(), reserve.getReserveDate(), 0);
             boolean flag = true;
             for (Reserve result : res) {
                 if (result.getReserveStatus() == 200 || result.getReserveStatus() == 500) {
@@ -94,7 +99,7 @@ public class ReserveServiceImpl implements ReserveService {
 
     public UniversalResponseBody selectNotAllowTime(int roomId, Date reserveDate) throws Exception {
         Set<Integer> res = new HashSet<>();
-        List<Reserve> sqlRes = reserveMapper.selectNotAllowTime(roomId, reserveDate);
+        List<Reserve> sqlRes = reserveMapper.selectNotAllowTime(roomId, reserveDate, 0);
         for (Reserve reserve : sqlRes) {
             SimpleDateFormat hourFormatter = new SimpleDateFormat("HH");
             SimpleDateFormat minuteFormatter = new SimpleDateFormat("mm");
@@ -124,7 +129,9 @@ public class ReserveServiceImpl implements ReserveService {
     }
 
     @Transactional
-    public UniversalResponseBody updateReserve(Reserve reserve) {
+    public UniversalResponseBody changeReserve(Reserve reserve, String formId,
+                                               String reserveDateTime, String reserveResult,
+                                               String WxMSS) throws Exception {
         Date start = reserve.getReserveStart();
         Date end = reserve.getReserveEnd();
         Room room = roomMapper.selectByName(reserve.getRoomName());
@@ -136,7 +143,7 @@ public class ReserveServiceImpl implements ReserveService {
                 log.error("结束时间在开始时间之前！");
                 return UniversalResponseBody.error(CommonEnum.BODY_NOT_MATCH);
             }
-            List<Reserve> res = reserveMapper.selectNotAllowTime(room.getRoomId(), reserve.getReserveDate());
+            List<Reserve> res = reserveMapper.selectNotAllowTime(room.getRoomId(), reserve.getReserveDate(), reserve.getReserveId());
             boolean flag = true;
             for (Reserve result : res) {
                 if (result.getReserveStatus() == 200 || result.getReserveStatus() == 500) {
@@ -151,13 +158,14 @@ public class ReserveServiceImpl implements ReserveService {
                 }
             }
             if (flag && reserveMapper.updateByPrimaryKey(reserve) > 0) {
+                String result = wxPushService.wxPushOneUser(reserve.getReserveId(), formId,
+                        reserve.getRoomName(), reserve.getReserveName(), reserveResult,
+                        reserveDateTime, WxMSS);
                 return UniversalResponseBody.success();
             } else {
                 return UniversalResponseBody.error("701", "Time occupy!");
             }
         }
-
-
 
 
     }
@@ -182,7 +190,7 @@ public class ReserveServiceImpl implements ReserveService {
 
     public UniversalResponseBody findReserveDetails(Integer reserveId, String otherThing, String shortMessage) {
         Reserve reserve = reserveMapper.selectByPrimaryKey(reserveId);
-        return UniversalResponseBody.success(new ReserveInfo(reserve, otherThing, shortMessage+reserve.getOpenPwd()));
+        return UniversalResponseBody.success(new ReserveInfo(reserve, otherThing, shortMessage + reserve.getOpenPwd()));
     }
 
     public boolean updateStatus(Integer reserveId, Integer status) {

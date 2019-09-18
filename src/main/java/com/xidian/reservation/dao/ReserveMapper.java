@@ -16,7 +16,7 @@ public interface ReserveMapper {
 
     Reserve selectByPrimaryKey(Integer reserveId);
 
-    List<Reserve> selectNotAllowTime(Integer roomId, Date reserveDate);
+    List<Reserve> selectNotAllowTime(Integer roomId, Date reserveDate,Integer reserveId);
 
     int updateByPrimaryKeySelective(Reserve record);
 

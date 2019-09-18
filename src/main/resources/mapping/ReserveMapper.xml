@@ -42,6 +42,7 @@
         WHERE reserve.reserve_date = DATE_FORMAT(#{reserveDate,jdbcType=DATE}, '%Y-%m-%d')
           AND (reserve_status = 0 OR reserve_status = 100)
           AND reserve.room_name = (SELECT room.room_name FROM room WHERE room.room_id = #{roomId,jdbcType=INTEGER})
+          AND reserve.reserve_id != #{reserveId,jdbcType=INTEGER}
     </select>
     <select id="findHistoryReserveByConsumerId" resultMap="BaseResultMap">
         SELECT
@@ -85,9 +86,8 @@
         FROM
         reserve
         WHERE
-        reserve_status = 0
-        AND (
-        DATEDIFF( reserve_date, DATE_FORMAT( NOW(), '%Y-%m-%d' ) )> 0
+        (
+        DATEDIFF( reserve_date, DATE_FORMAT( NOW(), '%Y-%m-%d' ) ) > 0
         OR (
         (
         DATE_FORMAT( NOW(), '%Y-%m-%d' ) = reserve_date
@@ -98,7 +98,7 @@
         )
         )
         ORDER BY
-        reserve_id
+        reserve_id DESC
     </select>
 
 
@@ -107,15 +107,16 @@
         from reserve
         where reserve_id = #{reserveId,jdbcType=INTEGER}
     </delete>
-    <insert id="insert" parameterType="com.xidian.reservation.entity.Reserve" useGeneratedKeys="true" keyProperty="reserveId">
+    <insert id="insert" parameterType="com.xidian.reservation.entity.Reserve" useGeneratedKeys="true"
+            keyProperty="reserveId">
         insert into reserve (reserve_id, consumer_id, reserve_name,
                              room_name, reserve_tel, reserve_date,
                              reserve_start, reserve_end, reserve_purpose,
-                             reserve_status,open_pwd)
+                             reserve_status, open_pwd)
         values (#{reserveId,jdbcType=INTEGER}, #{consumerId,jdbcType=BIGINT}, #{reserveName,jdbcType=VARCHAR},
                 #{roomName,jdbcType=VARCHAR}, #{reserveTel,jdbcType=BIGINT}, #{reserveDate,jdbcType=DATE},
                 #{reserveStart,jdbcType=TIME}, #{reserveEnd,jdbcType=TIME}, #{reservePurpose,jdbcType=VARCHAR},
-                #{reserveStatus,jdbcType=INTEGER},#{openPwd,jdbcType=VARCHAR})
+                #{reserveStatus,jdbcType=INTEGER}, #{openPwd,jdbcType=VARCHAR})
     </insert>
     <insert id="insertSelective" parameterType="com.xidian.reservation.entity.Reserve">
         insert into reserve
@@ -239,7 +240,7 @@
             reserve_end     = #{reserveEnd,jdbcType=TIME},
             reserve_purpose = #{reservePurpose,jdbcType=VARCHAR},
             reserve_status  = #{reserveStatus,jdbcType=INTEGER},
-            open_pwd = #{openPwd,jdbcType=VARCHAR}
+            open_pwd        = #{openPwd,jdbcType=VARCHAR}
         where reserve_id = #{reserveId,jdbcType=INTEGER}
     </update>
 </mapper>
