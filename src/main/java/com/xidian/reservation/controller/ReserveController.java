@@ -124,6 +124,20 @@ public class ReserveController {
         return reserveService.findNotStartAndStatus0(pageNum, pageSize);
     }
 
+    /**
+     * @Description: 按教室查找申请队列
+     * @Date:        9:30 2019/9/20
+     * @Param:       [roomName, pageNum, pageSize]
+     * @return:      com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
+     */
+    @ManagerLoginToken
+    @RequestMapping(value = "/room/apply/{pageNum}/{pageSize}", method = RequestMethod.POST)
+    public UniversalResponseBody applyByRoomReserve(@NotNull @RequestParam("roomName") String roomName,
+                                                    @PathVariable("pageNum") int pageNum,
+                                                    @PathVariable("pageSize") int pageSize) {
+        return reserveService.findNotStartAndStatus0ByRoom(roomName, pageNum, pageSize);
+    }
+
 
     /**
      * @Description: 申请详情页
@@ -234,9 +248,10 @@ public class ReserveController {
      * @Param: []
      * @return: com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
      */
-    @UserLoginToken
     @RequestMapping(value = "/view/room/all", method = RequestMethod.GET)
     public UniversalResponseBody viewAllRoom() {
         return roomService.findAllRoom();
     }
+
+
 }

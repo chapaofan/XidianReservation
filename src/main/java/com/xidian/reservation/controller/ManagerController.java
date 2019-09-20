@@ -5,6 +5,7 @@ import com.xidian.reservation.entity.Consumer;
 import com.xidian.reservation.entity.Room;
 import com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody;
 import com.xidian.reservation.service.ConsumerService;
+import com.xidian.reservation.service.LockService;
 import com.xidian.reservation.service.RoomService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,9 @@ public class ManagerController {
 
     @Resource
     private RoomService roomService;
+
+    @Resource
+    private LockService lockService;
 
     /**
      * @Description: 添加教室
@@ -100,6 +104,26 @@ public class ManagerController {
     @RequestMapping(value = "/view/room/{pageNum}/{pageSize}", method = RequestMethod.GET)
     public UniversalResponseBody viewRoomsByPage(@PathVariable("pageNum") int pageNum,@PathVariable("pageSize") int pageSize){
         return roomService.findRoomByPage(pageNum,pageSize);
+    }
+
+
+    /**
+     * @Description: 远程开锁
+     * @Date:        10:36 2019/9/20
+     * @Param:       [roomId, managerName, managerTel]
+     * @return:      com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
+     */
+    @ManagerLoginToken
+    @RequestMapping(value = "/room/open", method = RequestMethod.POST)
+    public UniversalResponseBody openRoom(@NotNull @RequestParam("roomId") String roomId,
+                                          @NotNull @RequestParam("managerName") String managerName,
+                                          @NotNull @RequestParam("managerTel") String managerTel) throws Exception{
+        if (lockService.getOpen(roomId,managerName,managerTel)){
+            return UniversalResponseBody.success();
+        }else {
+            log.error("远程开锁失败!");
+            return UniversalResponseBody.error("Failed open door!");
+        }
     }
 
 }

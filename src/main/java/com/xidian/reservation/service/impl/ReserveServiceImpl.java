@@ -188,6 +188,12 @@ public class ReserveServiceImpl implements ReserveService {
         return UniversalResponseBody.success(pageInfo);
     }
 
+    public UniversalResponseBody findNotStartAndStatus0ByRoom(String roomName,int pageNum, int pageSize){
+        PageHelper.startPage(pageNum, pageSize);
+        PageInfo<Reserve> pageInfo = new PageInfo<>(reserveMapper.findNotStartAndStatus0ByRoom(roomName));
+        return UniversalResponseBody.success(pageInfo);
+    }
+
     public UniversalResponseBody findReserveDetails(Integer reserveId, String otherThing, String shortMessage) {
         Reserve reserve = reserveMapper.selectByPrimaryKey(reserveId);
         return UniversalResponseBody.success(new ReserveInfo(reserve, otherThing, shortMessage + reserve.getOpenPwd()));

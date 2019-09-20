@@ -19,6 +19,8 @@ public interface ReserveService {
 
     UniversalResponseBody findNotStartAndStatus0(int pageNum, int pageSize);
 
+    UniversalResponseBody findNotStartAndStatus0ByRoom(String roomName,int pageNum, int pageSize);
+
     UniversalResponseBody selectNotAllowTime(int roomId, Date day) throws Exception;
 
     UniversalResponseBody findReserveDetails(Integer reserveId, String otherThing, String shortMessage);

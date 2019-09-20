@@ -27,4 +27,6 @@ public interface ReserveMapper {
     Page<Reserve> findNotStartReserveByConsumer(Long consumerId);
 
     Page<Reserve> findNotStartAndStatus0();
+
+    Page<Reserve> findNotStartAndStatus0ByRoom(String roomName);
 }
