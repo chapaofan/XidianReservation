@@ -5,6 +5,7 @@ import com.xidian.reservation.entity.Reserve;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface ReserveMapper {
 
@@ -29,4 +30,8 @@ public interface ReserveMapper {
     Page<Reserve> findNotStartAndStatus0();
 
     Page<Reserve> findNotStartAndStatus0ByRoom(String roomName);
+
+    List<Reserve> findByDate(Date reserveDate);
+
+    List<Reserve> findReserveByDateTime(Date reserveDate,String startTime,String endTime);
 }

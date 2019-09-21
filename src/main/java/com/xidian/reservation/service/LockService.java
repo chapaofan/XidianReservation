@@ -125,7 +125,7 @@ public class LockService {
     }
 
 
-    public boolean getOpen(String roomId,String name,String mobile) throws Exception {
+    public boolean getOpen(Integer roomId, String name, String mobile) throws Exception {
         HttpHeaders headers = new HttpHeaders();
         //定义请求参数类型，这里用json所以是MediaType.APPLICATION_JSON
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -152,9 +152,44 @@ public class LockService {
         }
 
         LockResponseBodySovler responseBodySovler = JSON.parseObject(responseEntity.getBody(), LockResponseBodySovler.class);
+        assert responseBodySovler != null;
         int code = responseBodySovler.getCode();
 
         return code == 0;
     }
 
+
+    public Map getStatus(Integer roomId) throws Exception {
+        HttpHeaders headers = new HttpHeaders();
+        //定义请求参数类型，这里用json所以是MediaType.APPLICATION_JSON
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        //Reserve reserve = reserveMapper.selectByPrimaryKey(reserveId);
+
+        String url = LOCK_HOST + "/v1/api/lock/get/status";
+
+        Map<String, String> map = getLockResponseBody().getData();
+        String token = map.get("accessToken");
+
+
+        Map<String, String> postParameters = new HashMap<>();
+        postParameters.put("token", token);
+        postParameters.put("hotelId", LOCK_HOTEL_ID);
+        postParameters.put("roomId", "" + roomId);
+
+        HttpEntity<Map<String, String>> request = new HttpEntity<>(postParameters, headers);
+
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, request, String.class);
+        if (responseEntity.getStatusCodeValue() != 200) {
+            throw new BizException("Connect Lock api failed!");
+        }
+
+        LockResponseBodySovler responseBodySovler = JSON.parseObject(responseEntity.getBody(), LockResponseBodySovler.class);
+
+        assert responseBodySovler != null;
+        if (responseBodySovler.getCode() == 0) {
+            return responseBodySovler.getData();
+        } else {
+            throw new BizException("-1", "智能锁Innjoy: code:" + responseBodySovler.getCode() + ",message:" + responseBodySovler.getMessage());
+        }
+    }
 }

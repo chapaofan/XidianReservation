@@ -1,11 +1,13 @@
 package com.xidian.reservation.controller;
 
 import com.xidian.reservation.annotation.ManagerLoginToken;
+import com.xidian.reservation.dao.ReserveMapper;
 import com.xidian.reservation.entity.Consumer;
 import com.xidian.reservation.entity.Room;
 import com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody;
 import com.xidian.reservation.service.ConsumerService;
 import com.xidian.reservation.service.LockService;
+import com.xidian.reservation.service.ReserveService;
 import com.xidian.reservation.service.RoomService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +34,9 @@ public class ManagerController {
 
     @Resource
     private LockService lockService;
+
+    @Resource
+    private ReserveService reserveService;
 
     /**
      * @Description: 添加教室
@@ -108,6 +113,19 @@ public class ManagerController {
 
 
     /**
+     * @Description: 获取锁的状态
+     * @Date:        20:43 2019/9/20
+     * @Param:       [roomId]
+     * @return:      com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
+     */
+    @ManagerLoginToken
+    @RequestMapping(value = "/room/get/status/{roomId}", method = RequestMethod.GET)
+    public UniversalResponseBody getLockStatus(@NotNull @PathVariable("roomId") Integer roomId) throws Exception{
+            return UniversalResponseBody.success(lockService.getStatus(roomId));
+    }
+
+
+    /**
      * @Description: 远程开锁
      * @Date:        10:36 2019/9/20
      * @Param:       [roomId, managerName, managerTel]
@@ -115,7 +133,7 @@ public class ManagerController {
      */
     @ManagerLoginToken
     @RequestMapping(value = "/room/open", method = RequestMethod.POST)
-    public UniversalResponseBody openRoom(@NotNull @RequestParam("roomId") String roomId,
+    public UniversalResponseBody openRoom(@NotNull @RequestParam("roomId") Integer roomId,
                                           @NotNull @RequestParam("managerName") String managerName,
                                           @NotNull @RequestParam("managerTel") String managerTel) throws Exception{
         if (lockService.getOpen(roomId,managerName,managerTel)){
@@ -126,4 +144,16 @@ public class ManagerController {
         }
     }
 
+
+    /**
+     * @Description: 返回一周预约表
+     * @Date:        21:03 2019/9/21
+     * @Param:       [weekNum]
+     * @return:      com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
+     */
+    @ManagerLoginToken
+    @RequestMapping(value = "/reserve/plan/{weekNum}", method = RequestMethod.GET)
+    public UniversalResponseBody openRoom(@NotNull @PathVariable("weekNum") Integer weekNum) throws Exception{
+        return reserveService.findReserveByWeekAndDateTime(weekNum);
+    }
 }

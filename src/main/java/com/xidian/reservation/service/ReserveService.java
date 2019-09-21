@@ -2,7 +2,6 @@ package com.xidian.reservation.service;
 
 import com.xidian.reservation.entity.Reserve;
 import com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody;
-
 import java.util.Date;
 
 public interface ReserveService {
@@ -29,4 +28,5 @@ public interface ReserveService {
 
     Reserve findReserveByReserveId(Integer reserveId);
 
+    UniversalResponseBody findReserveByWeekAndDateTime(int weekNum)throws Exception;
 }

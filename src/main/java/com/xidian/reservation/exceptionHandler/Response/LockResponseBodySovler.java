@@ -1,7 +1,6 @@
 package com.xidian.reservation.exceptionHandler.Response;
 
 import lombok.Data;
-
 import java.util.Map;
 
 /**
@@ -18,9 +17,9 @@ public class LockResponseBodySovler<T> {
 
     private String message;
 
-    private Map<String, String> data;
+    private Map<String, Object> data;
 
-    public LockResponseBodySovler(int code, String message, Map<String, String> data) {
+    public LockResponseBodySovler(int code, String message, Map<String, Object> data) {
         this.code = code;
         this.message = message;
         this.data = data;

@@ -15,16 +15,15 @@ import com.xidian.reservation.service.ReserveService;
 import com.xidian.reservation.service.WxPushService;
 import com.xidian.reservation.utils.String2DateUtils;
 import com.xidian.reservation.utils.WeChatUtil;
+import com.xidian.reservation.utils.DateAndTimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author ：Maolin
@@ -188,7 +187,7 @@ public class ReserveServiceImpl implements ReserveService {
         return UniversalResponseBody.success(pageInfo);
     }
 
-    public UniversalResponseBody findNotStartAndStatus0ByRoom(String roomName,int pageNum, int pageSize){
+    public UniversalResponseBody findNotStartAndStatus0ByRoom(String roomName, int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         PageInfo<Reserve> pageInfo = new PageInfo<>(reserveMapper.findNotStartAndStatus0ByRoom(roomName));
         return UniversalResponseBody.success(pageInfo);
@@ -213,4 +212,26 @@ public class ReserveServiceImpl implements ReserveService {
     public Reserve findReserveByReserveId(Integer reserveId) {
         return reserveMapper.selectByPrimaryKey(reserveId);
     }
+
+    public UniversalResponseBody findReserveByWeekAndDateTime(int weekNum) throws Exception {
+        //weekNum从0开始
+        Date date = DateAndTimeUtil.addDay(new Date(System.currentTimeMillis()), weekNum * 7);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        List<String> weekdays = DateAndTimeUtil.getDateToWeek(date);
+        Map<String, Object> res = new HashMap<>();
+
+        for (String day : weekdays) {
+            Date weekday = formatter.parse(day);
+            Map<String, Object> resultPart = new HashMap<>();
+            for (int i = 8; i < 22; i++) {
+                resultPart.put(i + ":00-" + (i + 1) + ":00", reserveMapper.findReserveByDateTime(weekday, i + "", (i + 1) + ""));
+            }
+            res.put(DateAndTimeUtil.getWeekdayByDate(weekday), resultPart);
+        }
+
+        return UniversalResponseBody.success(res);
+    }
+
+
 }
