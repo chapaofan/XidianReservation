@@ -28,5 +28,5 @@ public interface ReserveService {
 
     Reserve findReserveByReserveId(Integer reserveId);
 
-    UniversalResponseBody findReserveByWeekAndDateTime(int weekNum)throws Exception;
+    UniversalResponseBody findReserveByWeekAndDateTime(int roomId,int weekNum)throws Exception;
 }

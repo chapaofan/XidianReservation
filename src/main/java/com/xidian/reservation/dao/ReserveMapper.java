@@ -33,5 +33,5 @@ public interface ReserveMapper {
 
     List<Reserve> findByDate(Date reserveDate);
 
-    List<Reserve> findReserveByDateTime(Date reserveDate,String startTime,String endTime);
+    List<Reserve> findReserveByDateTime(Integer roomId,Date reserveDate,String startTime,String endTime);
 }

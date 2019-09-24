@@ -1,7 +1,6 @@
 package com.xidian.reservation.controller;
 
 import com.xidian.reservation.annotation.ManagerLoginToken;
-import com.xidian.reservation.dao.ReserveMapper;
 import com.xidian.reservation.entity.Consumer;
 import com.xidian.reservation.entity.Room;
 import com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody;
@@ -9,10 +8,14 @@ import com.xidian.reservation.service.ConsumerService;
 import com.xidian.reservation.service.LockService;
 import com.xidian.reservation.service.ReserveService;
 import com.xidian.reservation.service.RoomService;
+import com.xidian.reservation.utils.DateAndTimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author ：Maolin
@@ -152,8 +155,17 @@ public class ManagerController {
      * @return:      com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody
      */
     @ManagerLoginToken
-    @RequestMapping(value = "/reserve/plan/{weekNum}", method = RequestMethod.GET)
-    public UniversalResponseBody openRoom(@NotNull @PathVariable("weekNum") Integer weekNum) throws Exception{
-        return reserveService.findReserveByWeekAndDateTime(weekNum);
+    @RequestMapping(value = "/reserve/plan/{weekNum}", method = RequestMethod.POST)
+    public UniversalResponseBody openRoom(@NotNull @PathVariable("weekNum") Integer weekNum,
+                                          @NotNull @RequestParam("roomId") Integer roomId) throws Exception{
+        return reserveService.findReserveByWeekAndDateTime(roomId,weekNum);
+    }
+
+
+    @ManagerLoginToken
+    @RequestMapping(value = "/week/{weekNum}", method = RequestMethod.GET)
+    public UniversalResponseBody weeks(@NotNull @PathVariable("weekNum") Integer weekNum) throws Exception{
+        Date date = DateAndTimeUtil.addDay(new Date(System.currentTimeMillis()), weekNum * 7);
+        return UniversalResponseBody.success(DateAndTimeUtil.getDateToWeek(date));
     }
 }

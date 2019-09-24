@@ -125,44 +125,54 @@
     <select id="findByDate" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM
-        reserve
-        WHERE
-        reserve_date = DATE_FORMAT(#{reserveDate,jdbcType=DATE}, '%Y-%m-%d')
+        FROM reserve
+        WHERE reserve_date = DATE_FORMAT(#{reserveDate,jdbcType=DATE}, '%Y-%m-%d')
     </select>
     <select id="findReserveByDateTime" resultMap="BaseResultMap">
-        SELECT
-        <include refid="Base_Column_List"/>
-        FROM
-        reserve
-        WHERE
-        reserve_date = DATE_FORMAT(#{reserveDate,jdbcType=DATE}, '%Y-%m-%d')
-        AND
-        (
-        (
-        TIMEDIFF( reserve_start ,CONCAT_WS('',#{startTime,jdbcType=VARCHAR},':00')) &gt;= 0
-        AND
-        TIMEDIFF( reserve_end ,CONCAT_WS('',#{endTime,jdbcType=VARCHAR},':00')) &lt;= 0
-        )
-        OR
-        (
-        TIMEDIFF( reserve_end ,CONCAT_WS('',#{endTime,jdbcType=VARCHAR},':00'))&lt;= 0
-        AND
-        TIMEDIFF( reserve_end ,CONCAT_WS('',#{startTime,jdbcType=VARCHAR},':15')) &gt;= 0
-        )
-        OR
-        (
-        TIMEDIFF( reserve_start ,CONCAT_WS('',#{startTime,jdbcType=VARCHAR},':45')) &lt;= 0
-        AND
-        TIMEDIFF( reserve_start ,CONCAT_WS('',#{startTime,jdbcType=VARCHAR},':00')) &gt;= 0
-        )
-        OR
-        (
-        TIMEDIFF( reserve_start ,CONCAT_WS('',#{startTime,jdbcType=VARCHAR},':00')) &lt;= 0
-        AND
-        TIMEDIFF( reserve_end ,CONCAT_WS('',#{endTime,jdbcType=VARCHAR},':00')) &gt;= 0
-        )
-        )
+        SELECT DISTINCT reserve.reserve_id,
+               reserve.consumer_id,
+               reserve.reserve_name,
+               reserve.room_name,
+               reserve.reserve_tel,
+               reserve.reserve_date,
+               reserve.reserve_start,
+               reserve.reserve_end,
+               reserve.reserve_purpose,
+               reserve.reserve_status,
+               reserve.open_pwd
+        FROM reserve,
+             room
+        WHERE reserve_date = DATE_FORMAT(#{reserveDate,jdbcType=DATE}, '%Y-%m-%d')
+          AND reserve_status = 100
+          AND (
+                (
+                            TIMEDIFF(reserve_start, CONCAT_WS('', #{startTime,jdbcType=VARCHAR}, ':00')) &gt;= 0
+                        AND
+                            TIMEDIFF(reserve_end, CONCAT_WS('', #{endTime,jdbcType=VARCHAR}, ':00')) &lt;= 0
+                    )
+                OR
+                (
+                            TIMEDIFF(reserve_end, CONCAT_WS('', #{endTime,jdbcType=VARCHAR}, ':00')) &lt;= 0
+                        AND
+                            TIMEDIFF(reserve_end, CONCAT_WS('', #{startTime,jdbcType=VARCHAR}, ':15')) &gt;= 0
+                    )
+                OR
+                (
+                            TIMEDIFF(reserve_start, CONCAT_WS('', #{startTime,jdbcType=VARCHAR}, ':45')) &lt;= 0
+                        AND
+                            TIMEDIFF(reserve_start, CONCAT_WS('', #{startTime,jdbcType=VARCHAR}, ':00')) &gt;= 0
+                    )
+                OR
+                (
+                            TIMEDIFF(reserve_start, CONCAT_WS('', #{startTime,jdbcType=VARCHAR}, ':00')) &lt;= 0
+                        AND
+                            TIMEDIFF(reserve_end, CONCAT_WS('', #{endTime,jdbcType=VARCHAR}, ':00')) &gt;= 0
+                    )
+            )
+          AND reserve.room_name = (
+            SELECT room.room_name
+            FROM room
+            WHERE room_id = #{roomId,jdbcType=INTEGER})
     </select>
 
 
