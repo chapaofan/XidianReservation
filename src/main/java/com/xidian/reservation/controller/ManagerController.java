@@ -137,14 +137,16 @@ public class ManagerController {
     @ManagerLoginToken
     @RequestMapping(value = "/room/open", method = RequestMethod.POST)
     public UniversalResponseBody openRoom(@NotNull @RequestParam("roomId") Integer roomId,
-                                          @NotNull @RequestParam("managerName") String managerName,
-                                          @NotNull @RequestParam("managerTel") String managerTel) throws Exception{
+                                          @RequestParam(value = "managerName",defaultValue = "张丹") String managerName,
+                                          @RequestParam(value = "managerTel",defaultValue = "18092295776") String managerTel) throws Exception{
         if (lockService.getOpen(roomId,managerName,managerTel)){
             return UniversalResponseBody.success();
         }else {
             log.error("远程开锁失败!");
             return UniversalResponseBody.error("Failed open door!");
         }
+        //return UniversalResponseBody.success(managerName+managerTel);
+
     }
 
 
