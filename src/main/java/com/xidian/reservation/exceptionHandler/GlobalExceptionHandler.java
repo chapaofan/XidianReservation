@@ -2,12 +2,11 @@ package com.xidian.reservation.exceptionHandler;
 
 import com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
-import java.sql.SQLException;
-import java.sql.SQLSyntaxErrorException;
 
 /**
  * @author ：Maolin
@@ -47,6 +46,7 @@ public class GlobalExceptionHandler {
     }
 
 
+
     /**
      * 处理其他异常
      * @param req
@@ -60,6 +60,7 @@ public class GlobalExceptionHandler {
         return UniversalResponseBody.error(CommonEnum.INTERNAL_SERVER_ERROR);
     }
 
+
     /**
      * 处理SQL语句异常
      * @param req
@@ -72,4 +73,19 @@ public class GlobalExceptionHandler {
         log.error("mysql语句异常，原因：",e);
         return UniversalResponseBody.error(CommonEnum.SQL_STATEMENT_ERROR);
     }*/
+
+
+
+    /**
+     * 处理格式异常
+     * @param req
+     * @param e
+     * @return
+     */
+    @ResponseBody
+    @ExceptionHandler(value = BindException.class)
+    public UniversalResponseBody exceptionHandler(HttpServletRequest req, BindException e){
+        log.error("数据格式错误！原因是:",e);
+        return UniversalResponseBody.error(CommonEnum.BODY_NOT_MATCH);
+    }
 }
