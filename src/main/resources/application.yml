@@ -18,17 +18,17 @@ spring:
 
 #智能锁接口配置
 LOCK:
-  account: UN_01
-  password: un123456
-  hotelId: UN1567671322
-  host: https://lock.innjoysmart.me
+  account: 
+  password: 
+  hotelId: 
+  host: 
 
 
 #微信小程序配置
 wx:
-  appid: wx2709ce70a691dad4
-  secret: 29254833786b7631bdd412e17c441b98
-  templateId: a9GQRxNcA10G_t7Yi_4HxLebTuewDJFuE56TIj-dAKg
+  appid: 
+  secret: 
+  templateId: 
   url: https://api.weixin.qq.com/sns/jscode2session?appid=${wx.appid}&secret=${wx.secret}&grant_type=authorization_code&js_code=
 
 ---
