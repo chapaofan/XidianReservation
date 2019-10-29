@@ -55,7 +55,7 @@
         (DATE_FORMAT( NOW(), '%Y-%m-%d' ) = reserve_date
         AND TIMEDIFF(DATE_FORMAT( NOW(), '%H:%i:%s' ),reserve_end)> 0)
         OR DATEDIFF( DATE_FORMAT( NOW(), '%Y-%m-%d' ), reserve_date )> 0)
-        ORDER BY reserve_date DESC,reserve_start DESC
+        ORDER BY reserve_date DESC,FIELD(reserve_status,100,500,200,0),reserve_start DESC
 
     </select>
     <select id="findNotStartReserveByConsumer" resultMap="BaseResultMap">
