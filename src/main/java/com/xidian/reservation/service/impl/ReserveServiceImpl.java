@@ -19,6 +19,7 @@ import com.xidian.reservation.utils.DateAndTimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -103,7 +104,7 @@ public class ReserveServiceImpl implements ReserveService {
 
             int startHour = (Integer.parseInt(hourFormatter.format(reserve.getReserveStart())) - 8) * 2;
             int startMinute = Integer.parseInt(minuteFormatter.format(reserve.getReserveStart()));
-            int endHour = (Integer.parseInt(hourFormatter.format(reserve.getReserveEnd())) - 8) * 2;
+            int endHour = (Integer.parseInt(hourFormatter.format(reserve.getReserveEnd())) - 8) * 2 - 1;
             int endMinute = Integer.parseInt(minuteFormatter.format(reserve.getReserveEnd()));
             if (startMinute - 30 > 0) {
                 startHour = startHour + 1;
@@ -211,7 +212,7 @@ public class ReserveServiceImpl implements ReserveService {
         return reserveMapper.selectByPrimaryKey(reserveId);
     }
 
-    public UniversalResponseBody findReserveByWeekAndDateTime(int roomId,int weekNum) throws Exception {
+    public UniversalResponseBody findReserveByWeekAndDateTime(int roomId, int weekNum) throws Exception {
         //weekNum从0开始
         Date date = DateAndTimeUtil.addDay(new Date(System.currentTimeMillis()), weekNum * 7);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -223,7 +224,7 @@ public class ReserveServiceImpl implements ReserveService {
             Date weekday = formatter.parse(day);
             Map<String, Object> resultPart = new HashMap<>();
             for (int i = 8; i < 22; i++) {
-                resultPart.put(i+"", reserveMapper.findReserveByDateTime(roomId,weekday, i + "", (i + 1) + ""));
+                resultPart.put(i + "", reserveMapper.findReserveByDateTime(roomId, weekday, i + "", (i + 1) + ""));
             }
             res.put(DateAndTimeUtil.getWeekdayByDate(weekday), resultPart);
         }
