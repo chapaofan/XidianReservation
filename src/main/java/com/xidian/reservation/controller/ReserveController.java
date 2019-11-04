@@ -33,9 +33,6 @@ public class ReserveController {
     private ReserveService reserveService;
 
     @Resource
-    private WxPushService wxPushService;
-
-    @Resource
     private LockService lockService;
 
     @Resource
@@ -73,7 +70,7 @@ public class ReserveController {
         reserve.setReservePurpose(EmojiCharacterUtil.filter(reserve.getReservePurpose()));
         reserve.setConsumerId(consumerId);
         reserve.setReserveStatus(0);
-        reserve.setOpenPwd(lockService.getPassword(reserve));
+        //reserve.setOpenPwd(lockService.getPassword(reserve));
         return reserveService.reserveRoom(reserve, formId, code);
     }
 
@@ -167,7 +164,7 @@ public class ReserveController {
                                             @NotNull @RequestParam("shortMessage") String shortMessage) throws Exception {
 
         //reserveStatus:100审核通过 500审核不通过 200取消会议
-        String WxMSS = otherThing + " " + shortMessage;
+        //String WxMSS = otherThing;
         Reserve reserve = reserveService.findReserveByReserveId(reserveData.getReserveId());
 
 
@@ -188,7 +185,7 @@ public class ReserveController {
             String reserveDateTime = reserveDate + " " + startTime + "--" + endTime;
 
             reserve.setReserveStatus(100);
-            return reserveService.changeReserve(reserve, wxInformation.getFormId(), reserveDateTime, "审核通过", WxMSS);
+            return reserveService.changeReserve(reserve, wxInformation.getFormId(), reserveDateTime, "审核通过", otherThing);
         }
 
     }

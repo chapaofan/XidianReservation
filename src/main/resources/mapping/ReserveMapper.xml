@@ -51,11 +51,16 @@
         reserve
         WHERE
         consumer_id = #{consumerId,jdbcType=BIGINT}
-        AND(
-        (DATE_FORMAT( NOW(), '%Y-%m-%d' ) = reserve_date
-        AND TIMEDIFF(DATE_FORMAT( NOW(), '%H:%i:%s' ),reserve_end)> 0)
-        OR DATEDIFF( DATE_FORMAT( NOW(), '%Y-%m-%d' ), reserve_date )> 0)
-        ORDER BY reserve_date DESC,FIELD(reserve_status,100,500,200,0),reserve_start DESC
+        AND (
+        DATEDIFF(reserve_date,DATE_FORMAT( NOW(), '%Y-%m-%d' )) &lt; 0
+        OR ( DATE_FORMAT( NOW(), '%Y-%m-%d' ) = reserve_date AND TIMEDIFF( DATE_FORMAT( NOW(), '%H:%i:%s' ), reserve_end )> 0 )
+        OR reserve_status = 200
+        OR reserve_status = 500
+        )
+        ORDER BY
+        reserve_date DESC,
+        FIELD( reserve_status, 100, 500, 200, 0 ),
+        reserve_start DESC
 
     </select>
     <select id="findNotStartReserveByConsumer" resultMap="BaseResultMap">
@@ -65,17 +70,10 @@
         reserve
         WHERE
         consumer_id = #{consumerId,jdbcType=BIGINT}
+        AND ( reserve_status = 100 OR reserve_status = 0 )
         AND (
-        (DATEDIFF( reserve_date, DATE_FORMAT( NOW(), '%Y-%m-%d' ) )> 0 AND DATEDIFF(reserve_date, DATE_FORMAT( NOW(),
-        '%Y-%m-%d' )) &lt;=7 )
-        OR (
-        (
-        DATE_FORMAT( NOW(), '%Y-%m-%d' ) = reserve_date
-        AND (
-        TIMEDIFF( DATE_FORMAT( NOW(), '%H:%i:%s' ), reserve_start )) > 0
-        AND TIMEDIFF( reserve_end, DATE_FORMAT( NOW(), '%H:%i:%s' ) )> 0
-        )
-        )
+        ( DATEDIFF( reserve_date, DATE_FORMAT( NOW(), '%Y-%m-%d' ) )> 0 AND DATEDIFF( reserve_date, DATE_FORMAT( NOW(), '%Y-%m-%d' )) &lt;= 7 )
+        OR ( ( DATE_FORMAT( NOW(), '%Y-%m-%d' ) = reserve_date AND TIMEDIFF( reserve_end, DATE_FORMAT( NOW(), '%H:%i:%s' ) )> 0 ) )
         )
         ORDER BY
         reserve_date,

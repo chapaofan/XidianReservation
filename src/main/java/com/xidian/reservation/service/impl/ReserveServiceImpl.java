@@ -11,6 +11,7 @@ import com.xidian.reservation.entity.Room;
 import com.xidian.reservation.entity.WxInformation;
 import com.xidian.reservation.exceptionHandler.CommonEnum;
 import com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody;
+import com.xidian.reservation.service.LockService;
 import com.xidian.reservation.service.ReserveService;
 import com.xidian.reservation.service.WxPushService;
 import com.xidian.reservation.utils.String2DateUtils;
@@ -34,6 +35,9 @@ import java.util.*;
 @Slf4j
 @Service
 public class ReserveServiceImpl implements ReserveService {
+
+    @Resource
+    private LockService lockService;
 
     @Resource
     private ReserveMapper reserveMapper;
@@ -155,10 +159,13 @@ public class ReserveServiceImpl implements ReserveService {
                     break;
                 }
             }
+            //更改时间更新密码
+            reserve.setOpenPwd(lockService.getPassword(reserve));
+
             if (flag && reserveMapper.updateByPrimaryKey(reserve) > 0) {
                 String result = wxPushService.wxPushOneUser(reserve.getReserveId(), formId,
                         reserve.getRoomName(), reserve.getReserveName(), reserveResult,
-                        reserveDateTime, WxMSS);
+                        reserveDateTime, WxMSS+"密码："+reserve.getOpenPwd());
                 return UniversalResponseBody.success();
             } else {
                 return UniversalResponseBody.error("701", "Time occupy!");
