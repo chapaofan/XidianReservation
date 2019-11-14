@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
  * @author ：Maolin
  * @className ：String2DateUtils
  * @date ：Created in 2019/9/1 12:34
- * @description： 时间转换工具
+ * @description： 时间转换工具,已全部移植到DateAndTimeUtil类
  * @version: 1.0
  */
 public class String2DateUtils {

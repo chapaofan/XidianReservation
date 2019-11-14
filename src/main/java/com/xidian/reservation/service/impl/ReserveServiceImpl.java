@@ -24,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author ：Maolin
@@ -53,6 +55,10 @@ public class ReserveServiceImpl implements ReserveService {
 
     @Resource
     private WxPushService wxPushService;
+
+    private final static HashMap<Long, ReentrantLock> lockMap = new HashMap<>();
+
+    private final static ReentrantLock userLock = new ReentrantLock();
 
 
     @Transactional
@@ -160,12 +166,15 @@ public class ReserveServiceImpl implements ReserveService {
                 }
             }
             //更改时间更新密码
-            reserve.setOpenPwd(lockService.getPassword(reserve));
+            //reserve.setOpenPwd(lockService.getPassword(reserve));
 
             if (flag && reserveMapper.updateByPrimaryKey(reserve) > 0) {
-                String result = wxPushService.wxPushOneUser(reserve.getReserveId(), formId,
+                /*String result = wxPushService.wxPushOneUser(reserve.getReserveId(), formId,
                         reserve.getRoomName(), reserve.getReserveName(), reserveResult,
-                        reserveDateTime, WxMSS+"密码："+reserve.getOpenPwd());
+                        reserveDateTime, WxMSS+"密码："+reserve.getOpenPwd());*/
+                wxPushService.wxPushOneUser(reserve.getReserveId(), formId,
+                        reserve.getRoomName(), reserve.getReserveName(), reserveResult,
+                        reserveDateTime, WxMSS + " 密码请在开始时间前10分钟内在小程序查看");
                 return UniversalResponseBody.success();
             } else {
                 return UniversalResponseBody.error("701", "Time occupy!");
@@ -181,9 +190,69 @@ public class ReserveServiceImpl implements ReserveService {
         return UniversalResponseBody.success(pageInfo);
     }
 
+
     public UniversalResponseBody findNotStartReserves(Long consumerId, int pageNum, int pageSize) {
+        //对查询出来的数据，判断，假如在
         PageHelper.startPage(pageNum, pageSize);
         PageInfo<Reserve> pageInfo = new PageInfo<>(reserveMapper.findNotStartReserveByConsumer(consumerId));
+        List<Reserve> list = pageInfo.getList();
+
+        //加锁，防止多用户操作导致数据不一致
+
+        userLock.lock();
+        ReentrantLock newLock = lockMap.getOrDefault(consumerId, new ReentrantLock());
+        userLock.unlock();
+        newLock.lock();
+
+        /**通过，密码为空，时间在现在时间前10分钟内
+         * 若迟到了，处理：以当前时间后一分钟预约获取密码
+         */
+        for (Reserve reserve : list) {
+            try {
+                long minuteDifference = DateAndTimeUtil.getMinuteDifference(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()),
+                        new SimpleDateFormat("yyyy-MM-dd").format(reserve.getReserveDate()) + " " +
+                                new SimpleDateFormat("HH:mm").format(reserve.getReserveStart()));
+
+                if (!("").equals(reserve.getOpenPwd()) && reserve.getReserveStatus() == 100) {
+                    if (minuteDifference < 10 && minuteDifference > 0) {
+                        reserve.setOpenPwd(lockService.getPassword(reserve));
+                        reserveMapper.updateByPrimaryKey(reserve);
+                    } else if (minuteDifference <= 0 ) {
+                        Date reserveTime = reserve.getReserveStart();
+                        //假若迟到的话，则以当前时间后一分钟预约获取密码
+                        reserve.setReserveStart(new Date(new Date().getTime() + 60000));
+                        reserve.setOpenPwd(lockService.getPassword(reserve));
+
+                        //数据库原预约时间不改变
+                        reserve.setReserveStart(reserveTime);
+                        reserveMapper.updateByPrimaryKey(reserve);
+                    }
+                }
+            } catch (Exception e) {
+                log.error("ReserveServiceImpl::findNotStartReserves方法异常{}", e.getMessage());
+            }
+
+        }
+
+        newLock.unlock();
+
+        //清除map中的锁
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(3000);
+                    userLock.lock();
+                    ReentrantLock newLock2 = lockMap.get(consumerId);
+                    if (newLock2 != null && !newLock2.isLocked()) {
+                        lockMap.remove(consumerId);
+                    }
+                    userLock.unlock();
+                } catch (InterruptedException e) {
+                    log.error("锁异常{}", e.getMessage());
+                }
+            }
+        }.start();
         return UniversalResponseBody.success(pageInfo);
     }
 
@@ -201,7 +270,15 @@ public class ReserveServiceImpl implements ReserveService {
 
     public UniversalResponseBody findReserveDetails(Integer reserveId, String otherThing, String shortMessage) {
         Reserve reserve = reserveMapper.selectByPrimaryKey(reserveId);
-        return UniversalResponseBody.success(new ReserveInfo(reserve, otherThing, shortMessage + reserve.getOpenPwd()));
+        if (("").equals(reserve.getOpenPwd())) {
+            return UniversalResponseBody.success(
+                    new ReserveInfo(reserve, otherThing,
+                            shortMessage));
+        } else {
+            return UniversalResponseBody.success(
+                    new ReserveInfo(reserve, otherThing,
+                            reserve.getOpenPwd()));
+        }
     }
 
     public boolean updateStatus(Integer reserveId, Integer status) {

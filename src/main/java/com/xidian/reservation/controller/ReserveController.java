@@ -146,7 +146,7 @@ public class ReserveController {
     public UniversalResponseBody applyDetails(@PathVariable("reserveId") Integer reserveId) throws Exception {
         String otherThing = "用完后请打扫！";
         //String customerPassword = lockService.getPassword(reserveId);
-        String shortMessage = "密码是：";
+        String shortMessage = "密码仅能在距开始时间十分钟内显示";
         return reserveService.findReserveDetails(reserveId, otherThing, shortMessage);
     }
 

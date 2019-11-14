@@ -68,15 +68,14 @@
         <include refid="Base_Column_List"/>
         FROM
         reserve
-        WHERE
-        consumer_id = #{consumerId,jdbcType=BIGINT}
-        AND ( reserve_status = 100 OR reserve_status = 0 )
+        WHERE consumer_id = #{consumerId,jdbcType=BIGINT}
+        AND (reserve_status = 100 OR reserve_status = 0)
         AND (
-        ( DATEDIFF( reserve_date, DATE_FORMAT( NOW(), '%Y-%m-%d' ) )> 0 AND DATEDIFF( reserve_date, DATE_FORMAT( NOW(), '%Y-%m-%d' )) &lt;= 7 )
-        OR ( ( DATE_FORMAT( NOW(), '%Y-%m-%d' ) = reserve_date AND TIMEDIFF( reserve_end, DATE_FORMAT( NOW(), '%H:%i:%s' ) )> 0 ) )
+        DATEDIFF(reserve_date, DATE_FORMAT(NOW(), '%Y-%m-%d')) > 0
+        OR
+        ((DATE_FORMAT(NOW(), '%Y-%m-%d') = reserve_date AND TIMEDIFF(reserve_end, DATE_FORMAT(NOW(), '%H:%i:%s')) > 0))
         )
-        ORDER BY
-        reserve_date,
+        ORDER BY reserve_date,
         reserve_start
     </select>
     <select id="findNotStartAndStatus0" resultMap="BaseResultMap">
