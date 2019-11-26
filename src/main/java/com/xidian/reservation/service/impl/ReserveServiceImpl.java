@@ -174,7 +174,7 @@ public class ReserveServiceImpl implements ReserveService {
                         reserveDateTime, WxMSS+"密码："+reserve.getOpenPwd());*/
                 wxPushService.wxPushOneUser(reserve.getReserveId(), formId,
                         reserve.getRoomName(), reserve.getReserveName(), reserveResult,
-                        reserveDateTime, WxMSS + " 密码请在开始时间前10分钟内在小程序查看");
+                        reserveDateTime, WxMSS);
                 return UniversalResponseBody.success();
             } else {
                 return UniversalResponseBody.error("701", "Time occupy!");
@@ -192,7 +192,7 @@ public class ReserveServiceImpl implements ReserveService {
 
 
     public UniversalResponseBody findNotStartReserves(Long consumerId, int pageNum, int pageSize) {
-        //对查询出来的数据，判断，假如在
+
         PageHelper.startPage(pageNum, pageSize);
         PageInfo<Reserve> pageInfo = new PageInfo<>(reserveMapper.findNotStartReserveByConsumer(consumerId));
         List<Reserve> list = pageInfo.getList();
@@ -214,7 +214,7 @@ public class ReserveServiceImpl implements ReserveService {
                                 new SimpleDateFormat("HH:mm").format(reserve.getReserveStart()));
 
                 if (!("").equals(reserve.getOpenPwd()) && reserve.getReserveStatus() == 100) {
-                    if (minuteDifference < 10 && minuteDifference > 0) {
+                    if (minuteDifference < 20 && minuteDifference > 0) {
                         reserve.setOpenPwd(lockService.getPassword(reserve));
                         reserveMapper.updateByPrimaryKey(reserve);
                     } else if (minuteDifference <= 0 ) {

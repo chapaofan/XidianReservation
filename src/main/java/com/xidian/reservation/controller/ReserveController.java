@@ -174,6 +174,7 @@ public class ReserveController {
         } else {
             //管理员更改教室和时间
             reserve.setRoomName(reserveData.getRoomName());
+
             reserve.setReserveStart(reserveData.getReserveStart());
             reserve.setReserveEnd(reserveData.getReserveEnd());
 
@@ -185,9 +186,8 @@ public class ReserveController {
             String reserveDateTime = reserveDate + " " + startTime + "--" + endTime;
 
             reserve.setReserveStatus(100);
-            return reserveService.changeReserve(reserve, wxInformation.getFormId(), reserveDateTime, "审核通过", otherThing);
+            return reserveService.changeReserve(reserve, wxInformation.getFormId(), reserveDateTime, "审核通过。密码请在预约开始前20分钟内在小程序查看", otherThing);
         }
-
     }
 
     /**
@@ -216,7 +216,7 @@ public class ReserveController {
             /*String result = wxPushService.wxPushOneUser(reserve.getReserveId(), wxInformation.getFormId(), reserve.getRoomName(), reserve.getReserveName(), "审核不通过",
                     reserveDateTime, "审核不通过，有问题请联系管理员");*/
             reserve.setReserveStatus(500);
-            return reserveService.changeReserve(reserve, wxInformation.getFormId(), reserveDateTime, "审核不通过", "审核不通过，有问题请联系管理员重新申请");
+            return reserveService.changeReserve(reserve, wxInformation.getFormId(), reserveDateTime, "审核不通过", "有问题请联系管理员重新申请");
         }
     }
 
