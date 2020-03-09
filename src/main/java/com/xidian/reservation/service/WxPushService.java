@@ -47,25 +47,25 @@ public class WxPushService {
     /**
      * 微信小程序推送单个用户
      */
-    public String wxPushOneUser(Integer reserveId, String formId, String roomName, String reserveName, String reserveResult, String reserveDatetime, String remarks) throws Exception {
+    public void wxPushOneUser(Integer reserveId, String roomName, String reserveName, String reserveResult, String reserveDatetime, String remarks) throws Exception {
 
 
         String openid = wxInformationMapper.selectByPrimaryKey(reserveId).getOpenId();
 
         //获取access_token
         String access_token = getAccess_token(APPID, APPSECRET);
-        String url = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=" + access_token;
-
+        //String url = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=" + access_token;
+        String url = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=" + access_token;
         //拼接推送的模版
         WxMssInfo wxMssInfo = new WxMssInfo();
         wxMssInfo.setTouser(openid);//用户openid
         wxMssInfo.setTemplate_id(TEMPLATEID);//模版id
-        wxMssInfo.setForm_id(formId);//formid
+        //wxMssInfo.setForm_id(formId);//formid
 
         Map<String, TemplateData> messageData = new HashMap<>();
 
         /**
-         *课室编号 {{keyword1.DATA}}
+         *预约地点 {{keyword1.DATA}}
          *预约人{{keyword2.DATA}}
          *预约结果{{keyword3.DATA}}
          *预约时间{{keyword4.DATA}}
@@ -98,7 +98,7 @@ public class WxPushService {
         ResponseEntity<String> responseEntity =
                 restTemplate.postForEntity(url, wxMssInfo, String.class);
         log.info("小程序推送结果={}", responseEntity.getBody());
-        return responseEntity.getBody();
+        responseEntity.getBody();
     }
 
 

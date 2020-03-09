@@ -18,4 +18,12 @@ public class WxInformation {
         this.openId = openId;
         this.formId = formId;
     }
+
+
+    public WxInformation(Integer reserveId, Long consumerId, String openId) {
+        this.reserveId = reserveId;
+        this.consumerId = consumerId;
+        this.openId = openId;
+        this.formId = "";
+    }
 }

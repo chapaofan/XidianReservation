@@ -62,7 +62,7 @@ public class ReserveServiceImpl implements ReserveService {
 
 
     @Transactional
-    public UniversalResponseBody reserveRoom(Reserve reserve, String formId, String code) throws Exception {
+    public UniversalResponseBody reserveRoom(Reserve reserve, String code) throws Exception {
         Date start = reserve.getReserveStart();
         Date end = reserve.getReserveEnd();
         Room room = roomMapper.selectByName(reserve.getRoomName());
@@ -92,7 +92,7 @@ public class ReserveServiceImpl implements ReserveService {
                 String openId = weChatUtil.getOpenId(code);
                 if (openId != null) {
                     reserveMapper.insert(reserve);
-                    WxInformation wxInformation = new WxInformation(reserve.getReserveId(), reserve.getConsumerId(), openId, formId);
+                    WxInformation wxInformation = new WxInformation(reserve.getReserveId(), reserve.getConsumerId(), openId);
                     wxInformationMapper.insert(wxInformation);
                     return UniversalResponseBody.success();
                 } else {
@@ -137,9 +137,8 @@ public class ReserveServiceImpl implements ReserveService {
     }
 
     @Transactional
-    public UniversalResponseBody changeReserve(Reserve reserve, String formId,
-                                               String reserveDateTime, String reserveResult,
-                                               String WxMSS) throws Exception {
+    public UniversalResponseBody changeReserve(Reserve reserve, String reserveDateTime,
+                                               String reserveResult, String WxMSS) throws Exception {
         Date start = reserve.getReserveStart();
         Date end = reserve.getReserveEnd();
         Room room = roomMapper.selectByName(reserve.getRoomName());
@@ -172,7 +171,7 @@ public class ReserveServiceImpl implements ReserveService {
                 /*String result = wxPushService.wxPushOneUser(reserve.getReserveId(), formId,
                         reserve.getRoomName(), reserve.getReserveName(), reserveResult,
                         reserveDateTime, WxMSS+"密码："+reserve.getOpenPwd());*/
-                wxPushService.wxPushOneUser(reserve.getReserveId(), formId,
+                wxPushService.wxPushOneUser(reserve.getReserveId(),
                         reserve.getRoomName(), reserve.getReserveName(), reserveResult,
                         reserveDateTime, WxMSS);
                 return UniversalResponseBody.success();
@@ -217,7 +216,7 @@ public class ReserveServiceImpl implements ReserveService {
                     if (minuteDifference < 20 && minuteDifference > 0) {
                         reserve.setOpenPwd(lockService.getPassword(reserve));
                         reserveMapper.updateByPrimaryKey(reserve);
-                    } else if (minuteDifference <= 0 ) {
+                    } else if (minuteDifference <= 0) {
                         Date reserveTime = reserve.getReserveStart();
                         //假若迟到的话，则以当前时间后一分钟预约获取密码
                         reserve.setReserveStart(new Date(new Date().getTime() + 60000));

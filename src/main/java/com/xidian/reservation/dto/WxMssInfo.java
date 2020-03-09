@@ -24,7 +24,7 @@ public class WxMssInfo {
     private String page = "";
 
     //收集到的用户formid
-    private String form_id;
+    //private String form_id;
 
     //放大那个推送字段
     private String emphasis_keyword = "";

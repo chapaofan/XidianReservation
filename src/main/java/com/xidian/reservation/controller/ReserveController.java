@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * @author ：Maolin
@@ -71,7 +72,7 @@ public class ReserveController {
         reserve.setConsumerId(consumerId);
         reserve.setReserveStatus(0);
         //reserve.setOpenPwd(lockService.getPassword(reserve));
-        return reserveService.reserveRoom(reserve, formId, code);
+        return reserveService.reserveRoom(reserve, code);
     }
 
 
@@ -169,7 +170,7 @@ public class ReserveController {
 
 
         WxInformation wxInformation = wxInformationService.findByConsumerId(reserveData.getReserveId());
-        if (reserve == null || wxInformation == null) {
+        if (Objects.isNull(reserve)||Objects.isNull(wxInformation)) {
             return UniversalResponseBody.error("Query data is empty!");
         } else {
             //管理员更改教室和时间
@@ -186,7 +187,7 @@ public class ReserveController {
             String reserveDateTime = reserveDate + " " + startTime + "--" + endTime;
 
             reserve.setReserveStatus(100);
-            return reserveService.changeReserve(reserve, wxInformation.getFormId(), reserveDateTime, "审核通过。密码请在预约开始前20分钟内在小程序查看", otherThing);
+            return reserveService.changeReserve(reserve, reserveDateTime, "审核通过。密码请在预约开始前20分钟内在小程序查看", otherThing);
         }
     }
 
@@ -203,7 +204,7 @@ public class ReserveController {
 
         Reserve reserve = reserveService.findReserveByReserveId(reserveId);
         WxInformation wxInformation = wxInformationService.findByConsumerId(reserveId);
-        if (reserve == null || wxInformation == null) {
+        if (Objects.isNull(reserve)||Objects.isNull(wxInformation)) {
             return UniversalResponseBody.error("Query data is empty!");
         } else {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -216,7 +217,7 @@ public class ReserveController {
             /*String result = wxPushService.wxPushOneUser(reserve.getReserveId(), wxInformation.getFormId(), reserve.getRoomName(), reserve.getReserveName(), "审核不通过",
                     reserveDateTime, "审核不通过，有问题请联系管理员");*/
             reserve.setReserveStatus(500);
-            return reserveService.changeReserve(reserve, wxInformation.getFormId(), reserveDateTime, "审核不通过", "有问题请联系管理员重新申请");
+            return reserveService.changeReserve(reserve, reserveDateTime, "审核不通过", "有问题请联系管理员重新申请");
         }
     }
 

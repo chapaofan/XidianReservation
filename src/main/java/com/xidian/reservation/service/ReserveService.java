@@ -2,15 +2,16 @@ package com.xidian.reservation.service;
 
 import com.xidian.reservation.entity.Reserve;
 import com.xidian.reservation.exceptionHandler.Response.UniversalResponseBody;
+
 import java.util.Date;
 
 public interface ReserveService {
 
-    UniversalResponseBody reserveRoom(Reserve reserve, String formId, String code) throws Exception;
+    UniversalResponseBody reserveRoom(Reserve reserve, String code) throws Exception;
 
     UniversalResponseBody deleteReserve(Integer reserveId);
 
-    UniversalResponseBody changeReserve(Reserve reserve, String formId, String reserveDateTime, String reserveResult, String WxMSS)throws Exception;
+    UniversalResponseBody changeReserve(Reserve reserve, String reserveDateTime, String reserveResult, String WxMSS) throws Exception;
 
     UniversalResponseBody findHistoryReserves(Long consumerId, int pageNum, int pageSize);
 
@@ -18,7 +19,7 @@ public interface ReserveService {
 
     UniversalResponseBody findNotStartAndStatus0(int pageNum, int pageSize);
 
-    UniversalResponseBody findNotStartAndStatus0ByRoom(String roomName,int pageNum, int pageSize);
+    UniversalResponseBody findNotStartAndStatus0ByRoom(String roomName, int pageNum, int pageSize);
 
     UniversalResponseBody selectNotAllowTime(int roomId, Date day) throws Exception;
 
@@ -28,5 +29,5 @@ public interface ReserveService {
 
     Reserve findReserveByReserveId(Integer reserveId);
 
-    UniversalResponseBody findReserveByWeekAndDateTime(int roomId,int weekNum)throws Exception;
+    UniversalResponseBody findReserveByWeekAndDateTime(int roomId, int weekNum) throws Exception;
 }
