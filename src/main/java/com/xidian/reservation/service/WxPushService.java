@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -62,41 +63,30 @@ public class WxPushService {
         wxMssInfo.setTemplate_id(TEMPLATEID);//模版id
         //wxMssInfo.setForm_id(formId);//formid
 
-        Map<String, TemplateData> messageData = new HashMap<>();
-
-        /**
-         *预约地点 {{keyword1.DATA}}
-         *预约人{{keyword2.DATA}}
-         *预约结果{{keyword3.DATA}}
-         *预约时间{{keyword4.DATA}}
-         *备注{{keyword5.DATA}}
-         */
-        TemplateData keyword1 = new TemplateData();
-        keyword1.setValue(roomName);
-        messageData.put("keyword1", keyword1);
+        Map<String, TemplateData> messageData = new LinkedHashMap<>();
 
 
-        TemplateData keyword2 = new TemplateData();
-        keyword2.setValue(reserveName);
-        messageData.put("keyword2", keyword2);
-
-
-        TemplateData keyword3 = new TemplateData();
-        keyword3.setValue(reserveResult);
-        messageData.put("keyword3", keyword3);
-
-        TemplateData keyword4 = new TemplateData();
-        keyword4.setValue(reserveDatetime);
-        messageData.put("keyword4", keyword4);
-
-        TemplateData keyword5 = new TemplateData();
-        keyword5.setValue(remarks);
-        messageData.put("keyword5", keyword5);
+//         {{thing2.DATA}}
+//         预约人
+//         {{name1.DATA}}
+//         预约结果
+//         {{phrase9.DATA}}
+//         预约时间
+//         {{date3.DATA}}
+//         备注
+//         {{thing7.DATA}}
+        messageData.put("thing2", new TemplateData(roomName));
+        messageData.put("name1", new TemplateData(reserveName));
+        messageData.put("phrase9", new TemplateData(reserveResult));
+        messageData.put("date3", new TemplateData(reserveDatetime));
+        messageData.put("thing7", new TemplateData(remarks));
 
         wxMssInfo.setData(messageData);
+        //log.info(messageData.toString());
 
         ResponseEntity<String> responseEntity =
                 restTemplate.postForEntity(url, wxMssInfo, String.class);
+        //log.info(wxMssInfo.toString());
         log.info("小程序推送结果={}", responseEntity.getBody());
         responseEntity.getBody();
     }

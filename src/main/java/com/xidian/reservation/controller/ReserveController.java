@@ -184,10 +184,9 @@ public class ReserveController {
             SimpleDateFormat formatter2 = new SimpleDateFormat("HH:mm:ss");
             String startTime = formatter2.format(reserve.getReserveStart());
             String endTime = formatter2.format(reserve.getReserveEnd());
-            String reserveDateTime = reserveDate + " " + startTime + "--" + endTime;
 
             reserve.setReserveStatus(100);
-            return reserveService.changeReserve(reserve, reserveDateTime, "审核通过。密码请在预约开始前20分钟内在小程序查看", otherThing);
+            return reserveService.changeReserve(reserve, reserveDate, "审核通过", "密码请在预约开始前20分钟内在小程序查看");
         }
     }
 
@@ -212,12 +211,11 @@ public class ReserveController {
             SimpleDateFormat formatter2 = new SimpleDateFormat("HH:mm:ss");
             String startTime = formatter2.format(reserve.getReserveStart());
             String endTime = formatter2.format(reserve.getReserveEnd());
-            String reserveDateTime = reserveDate + " " + startTime + "--" + endTime;
 
             /*String result = wxPushService.wxPushOneUser(reserve.getReserveId(), wxInformation.getFormId(), reserve.getRoomName(), reserve.getReserveName(), "审核不通过",
                     reserveDateTime, "审核不通过，有问题请联系管理员");*/
             reserve.setReserveStatus(500);
-            return reserveService.changeReserve(reserve, reserveDateTime, "审核不通过", "有问题请联系管理员重新申请");
+            return reserveService.changeReserve(reserve, reserveDate, "审核不通过", "有问题请联系管理员重新申请");
         }
     }
 

@@ -1,6 +1,7 @@
 package com.xidian.reservation.dto;
 
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.Map;
 
@@ -21,13 +22,13 @@ public class WxMssInfo {
     private String template_id;
 
     //默认跳到小程序首页
-    private String page = "";
+    //private String page = "";
 
     //收集到的用户formid
     //private String form_id;
 
     //放大那个推送字段
-    private String emphasis_keyword = "";
+    //private String emphasis_keyword = "";
 
     //推送文字
     private Map<String, TemplateData> data;
